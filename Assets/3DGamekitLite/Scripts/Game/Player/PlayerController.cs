@@ -161,7 +161,14 @@ namespace Gamekit3D
 
             m_Damageable.isInvulnerable = true;
 
-            EquipMeleeWeapon(false);
+            if (transform.root.name == "XR Origin")
+            {
+                EquipMeleeWeapon(true);
+            }
+            else
+            {
+                EquipMeleeWeapon(false);
+            }
 
             m_Renderers = GetComponentsInChildren<Renderer>();
         }
@@ -184,7 +191,14 @@ namespace Gamekit3D
 
             UpdateInputBlocking();
 
-            EquipMeleeWeapon(IsWeaponEquiped());
+            if (transform.root.name == "XR Origin")
+            {
+                EquipMeleeWeapon(true);
+            }
+            else
+            {
+                EquipMeleeWeapon(IsWeaponEquiped());
+            }
 
             m_Animator.SetFloat(m_HashStateTime, Mathf.Repeat(m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime, 1f));
             m_Animator.ResetTrigger(m_HashMeleeAttack);
