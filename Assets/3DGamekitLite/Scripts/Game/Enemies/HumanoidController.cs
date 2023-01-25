@@ -11,7 +11,7 @@ public class HumanoidController : MonoBehaviour
     //また、文字列の打ち間違いをしないようにします
     private static readonly int AnimationGotHitHash = Animator.StringToHash("GotHit");
     private static readonly int AnimationMovingHash = Animator.StringToHash("Moving");
-    private static readonly int AnimationAttackingHash = Animator.StringToHash("Attacking");
+    private static readonly int AnimationAttack_from_leftHash = Animator.StringToHash("Attack_from_left");
     private static readonly int AnimationDeadHash = Animator.StringToHash("Dead");
 
 
@@ -196,13 +196,13 @@ public class HumanoidController : MonoBehaviour
             transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
 
             //攻撃フラグをオンにする
-            _animator.SetBool(AnimationAttackingHash, true);
+            _animator.SetBool(AnimationAttack_from_leftHash, true);
 
         }
         else
         {
             //攻撃フラグをオフにする
-            _animator.SetBool(AnimationAttackingHash, false);
+            _animator.SetBool(AnimationAttack_from_leftHash, false);
         }
     }
 }
