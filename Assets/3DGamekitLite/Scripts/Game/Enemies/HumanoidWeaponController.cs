@@ -50,7 +50,7 @@ public class HumanoidWeaponController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         //当たったのがプレイヤーの武器かどうかを判定します
-        if (other.gameObject.TryGetComponent<PlayerWeapon>(out PlayerWeapon _playerWeapon))
+        if (other.gameObject.TryGetComponent<PlayerWeaponController>(out PlayerWeaponController _playerWeaponControllerIdentification))
         {
             //敵の攻撃が当たったことを示すパラメーターをオンにします
             //Triggerの場合は自動でオフになるため、Boolのようにfalseにする処理は必要ありません

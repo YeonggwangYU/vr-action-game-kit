@@ -88,10 +88,7 @@ public class HumanoidController : MonoBehaviour
     {
 
         //当たったのがプレイヤーの武器かどうかを判定します
-        //if (other.gameObject.CompareTag("PlayerWeapon"))
-        //PlayerWeapon _playerWeapon = other.gameObject.GetComponent<PlayerWeapon>();
-        //if (_playerWeapon != null) 
-        if (other.gameObject.TryGetComponent<PlayerWeapon>(out PlayerWeapon _playerWeapon))
+        if (other.gameObject.TryGetComponent<PlayerWeaponController>(out PlayerWeaponController _playerWeaponControllerIdentification))
         {
             //敵に攻撃がヒットした音を鳴らします
             _audioSource.PlayOneShot(_se_attack_hit);

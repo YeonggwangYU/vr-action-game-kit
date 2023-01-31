@@ -85,7 +85,7 @@ public class PlayerWeaponController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         //当たったのが敵の武器かどうかを判定します
-        if (other.gameObject.CompareTag("EnemyWeapon"))
+        if (other.gameObject.TryGetComponent<HumanoidWeaponController>(out HumanoidWeaponController _humanoidWeaponControllerIdentification))
         {
             //武器が衝突する音を鳴らします
             _audioSource.PlayOneShot(_se_sword_collision);
@@ -95,12 +95,12 @@ public class PlayerWeaponController : MonoBehaviour
         }
 
         //当たったのが敵かどうかを判定します
-        if (other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.TryGetComponent<HumanoidController>(out HumanoidController _humanoidControllerIdentification))
         {
             //コントローラーを振動させます。3つ目の引数が振動させる時間です
             _inputDevice.SendHapticImpulse(0, 0.5f, 0.1f);
+
         }
 
     }
-
 }
