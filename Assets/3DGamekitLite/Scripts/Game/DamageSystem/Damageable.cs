@@ -23,6 +23,7 @@ namespace Gamekit3D
         [FormerlySerializedAs("hitForwardRoation")] //SHAME!
         public float hitForwardRotation = 360.0f;
 
+        //無敵時間かどうかを表す変数です
         public bool isInvulnerable { get; set; }
         public int currentHitPoints { get; private set; }
 
