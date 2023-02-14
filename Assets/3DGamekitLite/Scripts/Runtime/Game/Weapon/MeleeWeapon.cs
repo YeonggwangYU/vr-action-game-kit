@@ -46,7 +46,7 @@ namespace Gamekit3D
         protected Vector3 m_Direction;
 
         protected bool m_IsThrowingHit = false;
-        protected bool m_InAttack = false;
+        protected bool inAttack = false;
 
         const int PARTICLE_COUNT = 10;
         protected ParticleSystem[] m_ParticlesPool = new ParticleSystem[PARTICLE_COUNT];
@@ -100,7 +100,7 @@ namespace Gamekit3D
             throwingHit = thowingAttack;
 
             //攻撃中であることを示し、武器が敵に当たった際にダメージやエフェクトが発生するようになります
-            m_InAttack = true;
+            inAttack = true;
 
             //攻撃開始地点の座標を取得するための変数の値を初期化しています
             m_PreviousPos = new Vector3[attackPoints.Length];
@@ -125,7 +125,7 @@ namespace Gamekit3D
         public void EndAttack()
         {
             //攻撃中が終わったことを示します
-            m_InAttack = false;
+            inAttack = false;
 
 
 #if UNITY_EDITOR
@@ -143,7 +143,7 @@ namespace Gamekit3D
         private void FixedUpdate()
         {
             //攻撃中かどうかを判定しています
-            if (m_InAttack)
+            if (inAttack)
             {
                 for (int i = 0; i < attackPoints.Length; ++i)
                 {

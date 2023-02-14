@@ -1,8 +1,9 @@
 {
-    "name": "Runtime.Tests",
+    "name": "3DGamekitLite.Tests",
     "rootNamespace": "",
     "references": [
-        "UnityEngine.TestRunner"
+        "UnityEngine.TestRunner",
+        "3DGamekitLite"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

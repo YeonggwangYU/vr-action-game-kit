@@ -8,24 +8,27 @@ namespace Gamekit3D
 {
     public class DamageTest
     {
-        //private Damage _damage;
+        private Damage _damage;
 
-        // �U�����ł͂Ȃ��ꍇ�ɁA�������I�����邩���e�X�g���܂�
+        // 攻撃中ではない場合に、攻撃がヒットしないことををテストします
         [Test]
-        public void GetAttackPositionFailTest()
+        public void HitCheck_FailTest()
         {
-            //GetAttackPosition(false);
-            Assert.That(1 < 10);
+            bool inAttack = false;
+            bool result = _damage.HitCheck(inAttack, _damage.attackPoints);
+            Assert.That(result == false);
         }
 
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-        [UnityTest]
-        public IEnumerator DamageTestWithEnumeratorPasses()
+        // 攻撃中の場合に、攻撃がヒットしたことをテストします
+        // ★ダメージを与えたこともテストしないといけないのでは？
+        // ★戻り値を構造体にしておくか？
+        [Test]
+        public void HitCheck_SuccessTest()
         {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
+            bool inAttack = true;
+            bool result = _damage.HitCheck(inAttack, _damage.attackPoints);
+            Assert.That(result == true);
         }
+
     }
 }

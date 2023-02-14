@@ -51,7 +51,7 @@ namespace Gamekit3D
         protected Quaternion m_TargetRotation;         // What rotation Ellen is aiming to have based on input.
         protected float m_AngleDiff;                   // Angle in degrees between Ellen's current rotation and her target rotation.
         protected Collider[] m_OverlapResult = new Collider[8];    // Used to cache colliders that are near Ellen.
-        protected bool m_InAttack;                     // Whether Ellen is currently in the middle of a melee attack.
+        protected bool inAttack;                     // Whether Ellen is currently in the middle of a melee attack.
         protected bool m_InCombo;                      // Whether Ellen is currently in the middle of her melee combo.
         protected Damageable m_Damageable;             // Reference used to set invulnerablity and health based on respawning.
         protected Renderer[] m_Renderers;              // References used to make sure Renderers are reset properly. 
@@ -256,7 +256,7 @@ namespace Gamekit3D
         void EquipMeleeWeapon(bool equip)
         {
             meleeWeapon.gameObject.SetActive(equip);
-            m_InAttack = false;
+            inAttack = false;
             m_InCombo = equip;
 
             if (!equip)
@@ -355,7 +355,7 @@ namespace Gamekit3D
             Vector3 resultingForward = targetRotation * Vector3.forward;
 
             // If attacking try to orient to close enemies.
-            if (m_InAttack)
+            if (inAttack)
             {
                 // Find all the enemies in the local area.
                 Vector3 centre = transform.position + transform.forward * 2.0f + transform.up;
@@ -414,7 +414,7 @@ namespace Gamekit3D
             bool updateOrientationForAirborne = !m_IsAnimatorTransitioning && m_CurrentStateInfo.shortNameHash == m_HashAirborne || m_NextStateInfo.shortNameHash == m_HashAirborne;
             bool updateOrientationForLanding = !m_IsAnimatorTransitioning && m_CurrentStateInfo.shortNameHash == m_HashLanding || m_NextStateInfo.shortNameHash == m_HashLanding;
 
-            return updateOrientationForLocomotion || updateOrientationForAirborne || updateOrientationForLanding || m_InCombo && !m_InAttack;
+            return updateOrientationForLocomotion || updateOrientationForAirborne || updateOrientationForLanding || m_InCombo && !inAttack;
         }
 
         // Called each physics step after SetTargetRotation if there is move input and Ellen is in the correct animator state according to IsOrientationUpdated.
@@ -562,14 +562,14 @@ namespace Gamekit3D
         public void MeleeAttackStart(int throwing = 0)
         {
             meleeWeapon.BeginAttack(throwing != 0);
-            m_InAttack = true;
+            inAttack = true;
         }
 
         // This is called by an animation event when Ellen finishes swinging her staff.
         public void MeleeAttackEnd()
         {
             meleeWeapon.EndAttack();
-            m_InAttack = false;
+            inAttack = false;
         }
 
         // This is called by Checkpoints to make sure Ellen respawns correctly.
