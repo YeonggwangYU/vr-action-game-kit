@@ -8,29 +8,29 @@ namespace Gamekit3D
     {
 
         /// <Summary>
-        /// �A�j���[�V�����̃p�����[�^�̑ł��ԈႢ��h�����߁A�ϐ��Ɋi�[����SetTrigger�ɓn���܂�
+        /// アニメーションのパラメータの打ち間違いを防ぐため、変数に格納してSetTriggerに渡します
         /// </Summary>
         private static readonly int AnimationRepelledHash = Animator.StringToHash("Repelled");
 
         /// <Summary>
-        /// ���̕ϐ��̒��̒l��ύX���邱�Ƃł��̕�������G�̑Ή������A�j���[�V�������Đ�����܂�
+        /// この変数の中の値を変更することでこの武器を持つ敵の対応したアニメーションが再生されます
         /// </Summary>
         [SerializeField] private Animator _animator;
 
         /// <Summary>
-        /// ���̕ϐ��̒��̒l��ύX���邱�Ƃŕ���̓����蔻��̗L���𑀍삵�܂�
+        /// この変数の中の値を変更することで武器の当たり判定の有無を操作します
         /// </Summary>
         [SerializeField] private BoxCollider _boxCollider;
 
         private void Start()
         {
-            //�U�����[�V�������n�܂�܂ł͓����蔻��𖳌������܂�
+            //攻撃モーションが始まるまでは当たり判定を無効化します
             DisableAttack();
         }
 
         /// <Summary>
-        /// �����Collider��L���ɂ��܂��B
-        /// �F�X�ȃV�`���G�[�V�����Ŏg����悤�ɑ��̃X�N���v�g����Ăяo����悤��public�ɂ��܂��B
+        /// 武器のColliderを有効にします。
+        /// 色々なシチュエーションで使えるように他のスクリプトから呼び出せるようにpublicにします。
         /// </Summary>
         public void EnableAttack()
         {
@@ -38,8 +38,8 @@ namespace Gamekit3D
         }
 
         /// <Summary>
-        /// �����Collider�𖳌��ɂ��܂��B
-        /// �F�X�ȃV�`���G�[�V�����Ŏg����悤�ɑ��̃X�N���v�g����Ăяo����悤��public�ɂ��܂��B
+        /// 武器のColliderを無効にします。
+        /// 色々なシチュエーションで使えるように他のスクリプトから呼び出せるようにpublicにします。
         /// </Summary>
         public void DisableAttack()
         {
@@ -47,18 +47,18 @@ namespace Gamekit3D
         }
 
         /// <Summary>
-        /// �v���C���[�̕��킪�G�̕���ɐݒ肵��Collider�ɐG���ƓG���̂�����A�j���[�V�������I���ɂ��܂�
+        /// プレイヤーの武器が敵の武器に設定したColliderに触れると敵がのけぞるアニメーションをオンにします
         /// </Summary>
         private void OnTriggerEnter(Collider other)
         {
-            //���������̂��v���C���[�̕��킩�ǂ����𔻒肵�܂�
+            //当たったのがプレイヤーの武器かどうかを判定します
             if (other.gameObject.TryGetComponent<PlayerWeaponController>(out PlayerWeaponController _playerWeaponControllerIdentification))
             {
-                //�G�̍U���������������Ƃ������p�����[�^�[���I���ɂ��܂�
-                //Trigger�̏ꍇ�͎����ŃI�t�ɂȂ邽�߁ABool�̂悤��false�ɂ��鏈���͕K�v����܂���
+                //敵の攻撃が当たったことを示すパラメーターをオンにします
+                //Triggerの場合は自動でオフになるため、Boolのようにfalseにする処理は必要ありません
                 _animator.SetTrigger(AnimationRepelledHash);
 
-                //�G�̍U����������I������̂ŁA����̓����蔻����I�t�ɂ��܂�
+                //敵の攻撃が当たり終わったので、武器の当たり判定をオフにします
                 DisableAttack();
             }
         }

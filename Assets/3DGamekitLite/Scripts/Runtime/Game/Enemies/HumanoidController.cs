@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//NavMeshAgent���g�����߂ɃC���|�[�g���܂�
+//NavMeshAgentを使うためにインポートします
 using UnityEngine.AI;
 
 namespace Gamekit3D
@@ -9,8 +9,8 @@ namespace Gamekit3D
     public class HumanoidController : MonoBehaviour
     {
 
-        //��������n�b�V���Ƃ��������ɗ\�ߕϊ����Ă������ƂŁA�����̓x�ɕ����񉻂��s�Ȃ��ł悢�悤�ɂ��ĕ��ׂ��y�����܂�
-        //�܂��A������̑ł��ԈႢ�����Ȃ��悤�ɂ��܂�
+        //文字列をハッシュという数字に予め変換しておくことで、処理の度に文字列化を行ないでよいようにして負荷を軽減します
+        //また、文字列の打ち間違いをしないようにします
         private static readonly int AnimationGotHitHash = Animator.StringToHash("GotHit");
         private static readonly int AnimationMovingHash = Animator.StringToHash("Moving");
         private static readonly int AnimationAttack_from_leftHash = Animator.StringToHash("Attack_from_left");
@@ -18,63 +18,63 @@ namespace Gamekit3D
 
 
         /// <Summary>
-        /// �G���|���܂łɂ����鎞�Ԃł�
+        /// 敵が倒れるまでにかかる時間です
         /// </Summary>
         private readonly float _timeEnemyDead = 1.3f;
 
         /// <Summary>
-        /// �G��|�����Ƃ��̃X���[����������܂ł̎��Ԃł�
+        /// 敵を倒したときのスローを解除するまでの時間です
         /// </Summary>
         private readonly float _delayTime = 2.3f;
 
         /// <Summary>
-        /// �ǂ̉����Đ����邩��ݒ肵�܂�
+        /// どの音を再生するかを設定します
         /// </Summary>
         [SerializeField] private AudioClip _se_attack_hit;
         [SerializeField] private AudioClip _se_death;
 
-        //�����Đ����邽�߂̃R���|�[�l���g�̏����i�[����ϐ��ł�
+        //音を再生するためのコンポーネントの情報を格納する変数です
         [SerializeField] private AudioSource _audioSource;
 
         /// <Summary>
-        /// ���̕ϐ��ɑ΂���Unity�̉�ʏ�Ńv���C���[��ݒ肷�邱�ƂŁA�G���v���C���[�Ɍ������܂�
+        /// この変数に対してUnityの画面上でプレイヤーを設定することで、敵がプレイヤーに向かいます
         /// </Summary>
         [SerializeField] private Transform _target;
 
         /// <Summary>
-        /// ���̕ϐ��ɑ΂��ēG�̕����ݒ肷�邱�ƂŁA����ɕt�^���ꂽ�X�N���v�g�̊֐����Ăяo����悤�ɂȂ�܂�
+        /// この変数に対して敵の武器を設定することで、武器に付与されたスクリプトの関数を呼び出せるようになります
         /// </Summary>
         [SerializeField] private HumanoidWeaponController _enemyWeaponController;
 
         /// <Summary>
-        /// �G�̃q�b�g�|�C���g��0�ȉ��ɂȂ邱�ƂœG���|��ă��X�|�[�����܂�
-        /// �G�̃q�b�g�|�C���g�𔼌������鏈���Ȃǂ�z�肵�ď����_��������^�ɂ��܂�
+        /// 敵のヒットポイントが0以下になることで敵が倒れてリスポーンします
+        /// 敵のヒットポイントを半減させる処理などを想定して小数点を扱える型にします
         /// </Summary>
         [SerializeField] private float _enemyHitPoint;
 
         /// <Summary>
-        /// ���̕ϐ��ɑ΂��ă^�[�Q�b�g�Ƃ��ăv���C���[���w�肷�邱�ƂœG���v���C���[�Ɍ������܂�
+        /// この変数に対してターゲットとしてプレイヤーを指定することで敵がプレイヤーに向かいます
         /// </Summary>
         [SerializeField] private NavMeshAgent _navMeshAgent;
 
         /// <Summary>
-        /// ���̕ϐ��̒��̒l��ύX���邱�ƂőΉ������A�j���[�V�������Đ�����܂�
+        /// この変数の中の値を変更することで対応したアニメーションが再生されます
         /// </Summary>
         [SerializeField] private Animator _animator;
 
         /// <Summary>
-        /// �X���[�̑����𒲐����܂�
+        /// スローの速さを調整します
         /// </Summary>
         [SerializeField] private float _timeScale;
 
         /// <Summary>
-        /// ���̕ϐ������s���邱�ƂŃG�t�F�N�g�����s����܂�
+        /// この変数を実行することでエフェクトが実行されます
         /// </Summary>
         [SerializeField] private ParticleSystem _particleSystem;
 
         /// <Summary>
-        /// �G�Ƀ_���[�W��^���ăq�b�g�|�C���g�����炵�܂�
-        /// �����I�ɃX�e�[�^�X�ُ�Ȃǃv���C���[�̕���ȊO����̃_���[�W��z�肵�ăp�u���b�N�ɂ��܂�
+        /// 敵にダメージを与えてヒットポイントを減らします
+        /// 将来的にステータス異常などプレイヤーの武器以外からのダメージを想定してパブリックにします
         /// </Summary>
         public float Damage(float inputEnemyHitPoint)
         {
@@ -84,60 +84,60 @@ namespace Gamekit3D
 
 
         /// <Summary>
-        /// �v���C���[�̕��킪�G�{�̂ɐݒ肵��Collider�ɐG���Ǝ��s����鏈���������܂�
+        /// プレイヤーの武器が敵本体に設定したColliderに触れると実行される処理を書きます
         /// </Summary>
         private void OnTriggerEnter(Collider other)
         {
 
-            //���������̂��v���C���[�̕��킩�ǂ����𔻒肵�܂�
+            //当たったのがプレイヤーの武器かどうかを判定します
             if (other.gameObject.TryGetComponent<PlayerWeaponController>(out PlayerWeaponController _playerWeaponControllerIdentification))
             {
-                //�G�ɍU�����q�b�g��������炵�܂�
+                //敵に攻撃がヒットした音を鳴らします
                 _audioSource.PlayOneShot(_se_attack_hit);
 
-                //�G�̃q�b�g�|�C���g�����炵�܂�
+                //敵のヒットポイントを減らします
                 _enemyHitPoint = Damage(_enemyHitPoint);
 
-                //�G�̃q�b�g�|�C���g�������Ȃ�����|��ă��X�|�[�����܂�
+                //敵のヒットポイントが無くなったら倒れてリスポーンします
                 if (_enemyHitPoint <= 0)
                 {
-                    //���Ԃ���莞�Ԓx��������ɂ��Ƃɖ߂��܂�
+                    //時間を一定時間遅くした後にもとに戻します
                     StartCoroutine(DelayCoroutine());
 
-                    //�V���b�N�E�F�[�u�𔭐������܂�
+                    //ショックウェーブを発生させます
                     _particleSystem.Play();
 
-                    //�G���|��郂�[�V�������Đ����܂�
+                    //敵が倒れるモーションを再生します
                     _animator.SetTrigger(AnimationDeadHash);
 
-                    //�|��郂�[�V������҂��Ă���G�����ł����܂�
+                    //倒れるモーションを待ってから敵を消滅させます
                     Destroy(gameObject, _timeEnemyDead);
                 }
 
-                //�G�̍U���������������Ƃ������p�����[�^�[���I���ɂ��܂�
+                //敵の攻撃が当たったことを示すパラメーターをオンにします
                 _animator.SetTrigger(AnimationGotHitHash);
 
             }
         }
 
         /// <Summary>
-        /// �G��|�����ۂɃX���[�ɂ��Ă���߂��܂�
+        /// 敵を倒した際にスローにしてから戻します
         /// </Summary>
         private IEnumerator DelayCoroutine()
         {
-            //���Ԃ̗����x�����܂�
+            //時間の流れを遅くします
             Time.timeScale = _timeScale;
 
-            // �G���|���܂ő҂��܂�
+            // 敵が倒れるまで待ちます
             yield return new WaitForSecondsRealtime(_delayTime);
 
-            //���Ԃ̗����߂��܂�
+            //時間の流れを戻します
             Time.timeScale = 1.0f;
         }
 
         /// <Summary>
-        /// �U�����[�V�����̓r���ŌĂяo����āA�����蔻��𖳌�������֐����Ăяo���܂�
-        /// private�ł��Ăяo����邱�Ƃ͉\�ł�
+        /// 攻撃モーションの途中で呼び出されて、当たり判定を無効化する関数を呼び出します
+        /// privateでも呼び出されることは可能です
         /// </Summary>
         private void OnAttackStart()
         {
@@ -145,7 +145,7 @@ namespace Gamekit3D
         }
 
         /// <Summary>
-        /// �U�����[�V�����̓r���ŌĂяo����āACollider�𖳌������邱�Ƃœ����蔻��������܂�
+        /// 攻撃モーションの途中で呼び出されて、Colliderを無効化することで当たり判定を消します
         /// </Summary>
         private void OnAttackEnd()
         {
@@ -153,7 +153,7 @@ namespace Gamekit3D
         }
 
         /// <Summary>
-        /// �G���|�ꂽ�Ƃ��ɃA�j���[�V��������Ăяo����鏈�����`���܂�
+        /// 敵が倒れたときにアニメーションから呼び出される処理を定義します
         /// </Summary>
         private void OnDeath()
         {
@@ -162,15 +162,15 @@ namespace Gamekit3D
 
 
         /// <Summary>
-        /// �Q�[���̋N�����p�����Ď��s����鏈���ł�
+        /// ゲームの起動中継続して実行される処理です
         /// </Summary>
         private void Update()
         {
-            //�v���C���[�̈ʒu�܂ňړ����܂�
+            //プレイヤーの位置まで移動します
             _navMeshAgent.SetDestination(_target.position);
 
-            //�G������������s�A�j���[�V�������Đ����܂�
-            //NavMeshAgent�̕ϐ��̃p�����[�^�ł���velocity.magnitude�����x��\���̂ŁA���ꂪ�����ł���������Ƃ����̂�> 0.1f�Ƃ����`�ŕ\���܂�
+            //敵が動いたら歩行アニメーションを再生します
+            //NavMeshAgentの変数のパラメータであるvelocity.magnitudeが速度を表すので、それが少しでも動いたらというのを> 0.1fという形で表します
             if (_navMeshAgent.velocity.magnitude > 0.1f)
             {
                 _animator.SetBool(AnimationMovingHash, true);
@@ -180,27 +180,27 @@ namespace Gamekit3D
                 _animator.SetBool(AnimationMovingHash, false);
             }
 
-            //�v���C���[�ƓG�̋�����NavMeshAgent�Őݒ肵�Ă����~������菭���߂��Ȃ�����G���U�����J�n���܂�
+            //プレイヤーと敵の距離がNavMeshAgentで設定している停止距離より少し近くなったら敵が攻撃を開始します
             if (Vector3.Distance(_target.position, _navMeshAgent.transform.position) < _navMeshAgent.stoppingDistance + 0.5f)
             {
-                //�v���C���[�̈ʒu���玩���̈ʒu���������ƂŁA�G���猩���v���C���[�̈ʒu���Z�o���܂��i���������悭�킩���Ă��Ȃ��j https://gomafrontier.com/unity/2883
-                //y�����Œ肷�邱�ƂœG����������Ȃ��悤�ɂ��܂�
-                //��transform���ϐ��錾�����Ŏg���闝�R���������
+                //プレイヤーの位置から自分の位置を引くことで、敵から見たプレイヤーの位置を算出します（★原理がよくわかっていない） https://gomafrontier.com/unity/2883
+                //y軸を固定することで敵が上を向かないようにします
+                //★transformが変数宣言無しで使える理由を解説する
                 var direction = _target.position - transform.position;
                 direction.y = 0;
 
-                //�G���v���C���[�̕����������悤�ɂ���
-                //�U�����������Lerp()�̑�O�����Œ�������
+                //敵がプレイヤーの方向を向くようにする
+                //振り向く速さはLerp()の第三引数で調整する
                 var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
                 transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
 
-                //�U���t���O���I���ɂ���
+                //攻撃フラグをオンにする
                 _animator.SetBool(AnimationAttack_from_leftHash, true);
 
             }
             else
             {
-                //�U���t���O���I�t�ɂ���
+                //攻撃フラグをオフにする
                 _animator.SetBool(AnimationAttack_from_leftHash, false);
             }
         }

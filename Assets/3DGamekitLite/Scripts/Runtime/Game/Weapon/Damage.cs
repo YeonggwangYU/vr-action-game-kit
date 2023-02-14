@@ -24,8 +24,7 @@ namespace Gamekit3D
         public AttackPoint[] attackPoints = new AttackPoint[0];
 
         /// <Summary>
-        /// �U���J�n�ʒu���猻�݂̈ʒu�̊ԂɌ������o���A
-        /// �q�b�g����R���C�_�[�����邩�ǂ������m�F���܂�
+        /// 敵に攻撃がヒットしたかをチェックします
         /// </Summary>
         public bool HitCheck(bool inAttack, AttackPoint[] attackPoints)
         {
@@ -33,9 +32,9 @@ namespace Gamekit3D
         }
 
         /// <Summary>
-        /// �_���[�W��^���鑊�肩�𔻒肵����Ń_���[�W��^���A�G�t�F�N�g�𔭐������܂�
-        /// �߂�l��false�̏ꍇ�͕��킪�e����鏈�������s�����悤�ȋL�q������܂����A
-        /// ���̃v���W�F�N�g���ł͒e����鏈���͖����悤�ł��i3D Game Kit����̕��ɂ���Ƒz�肵�܂��j
+        /// ダメージを与える相手かを判定した上でダメージを与え、エフェクトを発生させます
+        /// 戻り値がfalseの場合は武器が弾かれる処理が実行されるような記述がありますが、
+        /// このプロジェクト内では弾かれる処理は無いようです（3D Game Kit無印の方にあると想定します）
         /// </Summary>
         private bool CheckDamage(Collider other, AttackPoint pts)
         {
