@@ -8,7 +8,7 @@ namespace Gamekit3D
 {
     public class DamageTest
     {
-        private Damage _damage;
+        private Damage _damage = new Damage();
 
         // 攻撃中ではない場合に、攻撃がヒットしないことををテストします
         [Test]
