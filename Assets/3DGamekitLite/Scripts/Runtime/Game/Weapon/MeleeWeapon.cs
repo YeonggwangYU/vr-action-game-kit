@@ -19,7 +19,7 @@ namespace Gamekit3D
 
 #if UNITY_EDITOR
             //editor only as it's only used in editor to display the path of the attack that is used by the raycast
-            [NonSerialized] public List<Vector3> PreviousPositions = new List<Vector3>();
+            [NonSerialized] public List<Vector3> previousPositions = new List<Vector3>();
 #endif
 
         }
@@ -36,26 +36,24 @@ namespace Gamekit3D
 
         public bool throwingHit
         {
-            get { return _isThrowingHit; }
-            set { _isThrowingHit = value; }
+            get { return m_IsThrowingHit; }
+            set { m_IsThrowingHit = value; }
         }
 
-        private GameObject _owner;
+        protected GameObject m_Owner;
 
-        private Vector3[] _previousPos = null;
-        private Vector3 _direction;
+        protected Vector3[] m_PreviousPos = null;
+        protected Vector3 m_Direction;
 
-        private bool _isThrowingHit = false;
-        private bool _inAttack = false;
+        protected bool m_IsThrowingHit = false;
+        protected bool inAttack = false;
 
         const int PARTICLE_COUNT = 10;
-        private ParticleSystem[] _particlesPool = new ParticleSystem[PARTICLE_COUNT];
-        private int _currentParticle = 0;
+        protected ParticleSystem[] m_ParticlesPool = new ParticleSystem[PARTICLE_COUNT];
+        protected int m_CurrentParticle = 0;
 
-        protected static RaycastHit[] RaycastHitCache = new RaycastHit[32];
-        protected static Collider[] ColliderCache = new Collider[32];
-
-        private Damage _damage = new Damage();
+        protected static RaycastHit[] s_RaycastHitCache = new RaycastHit[32];
+        protected static Collider[] s_ColliderCache = new Collider[32];
 
         /// <Summary>
         /// 所定の数だけパーティクルを予め作成して、動きを止めておきます
@@ -66,8 +64,8 @@ namespace Gamekit3D
             {
                 for (int i = 0; i < PARTICLE_COUNT; ++i)
                 {
-                    _particlesPool[i] = Instantiate(hitParticlePrefab);
-                    _particlesPool[i].Stop();
+                    m_ParticlesPool[i] = Instantiate(hitParticlePrefab);
+                    m_ParticlesPool[i].Stop();
                 }
             }
         }
@@ -86,7 +84,7 @@ namespace Gamekit3D
         /// </Summary>
         public void SetOwner(GameObject owner)
         {
-            _owner = owner;
+            m_Owner = owner;
         }
 
         /// <Summary>
@@ -102,21 +100,21 @@ namespace Gamekit3D
             throwingHit = thowingAttack;
 
             //攻撃中であることを示し、武器が敵に当たった際にダメージやエフェクトが発生するようになります
-            _inAttack = true;
+            inAttack = true;
 
             //攻撃開始地点の座標を取得するための変数の値を初期化しています
-            _previousPos = new Vector3[attackPoints.Length];
+            m_PreviousPos = new Vector3[attackPoints.Length];
 
             //アタックポイント毎に攻撃開始地点の座標を取得します
             for (int i = 0; i < attackPoints.Length; ++i)
             {
                 Vector3 worldPos = attackPoints[i].attackRoot.position +
                                    attackPoints[i].attackRoot.TransformVector(attackPoints[i].offset);
-                _previousPos[i] = worldPos;
+                m_PreviousPos[i] = worldPos;
 
 #if UNITY_EDITOR
-                attackPoints[i].PreviousPositions.Clear();
-                attackPoints[i].PreviousPositions.Add(_previousPos[i]);
+                attackPoints[i].previousPositions.Clear();
+                attackPoints[i].previousPositions.Add(m_PreviousPos[i]);
 #endif
             }
         }
@@ -127,13 +125,13 @@ namespace Gamekit3D
         public void EndAttack()
         {
             //攻撃中が終わったことを示します
-            _inAttack = false;
+            inAttack = false;
 
 
 #if UNITY_EDITOR
             for (int i = 0; i < attackPoints.Length; ++i)
             {
-                attackPoints[i].PreviousPositions.Clear();
+                attackPoints[i].previousPositions.Clear();
             }
 #endif
         }
@@ -144,7 +142,53 @@ namespace Gamekit3D
         /// </Summary>
         private void FixedUpdate()
         {
-            _damage.HitCheck(_inAttack, attackPoints, _previousPos, RaycastHitCache);
+            //攻撃中かどうかを判定しています
+            if (inAttack)
+            {
+                for (int i = 0; i < attackPoints.Length; ++i)
+                {
+                    AttackPoint pts = attackPoints[i];
+
+                    //武器の先にあるアタックポイントの現在の座標を取得します
+                    Vector3 worldPos = pts.attackRoot.position + pts.attackRoot.TransformVector(pts.offset);
+                    
+                    //アタックポイントの現在の座標と過去の座標から攻撃の進度及び方向を取得します
+                    Vector3 attackVector = worldPos - m_PreviousPos[i];
+
+                    //攻撃の進度が極端に少ない場合に、小さい値を格納します
+                    if (attackVector.magnitude < 0.001f)
+                    {
+                        // A zero vector for the sphere cast don't yield any result, even if a collider overlap the "sphere" created by radius. 
+                        // so we set a very tiny microscopic forward cast to be sure it will catch anything overlaping that "stationary" sphere cast
+                        attackVector = Vector3.forward * 0.0001f;
+                    }
+
+                    //攻撃の方向に見えない光線Rayを発生させます
+                    Ray r = new Ray(worldPos, attackVector.normalized);
+
+                    //発生した光線に衝突したものを変数に格納します
+                    int contacts = Physics.SphereCastNonAlloc(r, pts.radius, s_RaycastHitCache, attackVector.magnitude,
+                        ~0,
+                        QueryTriggerInteraction.Ignore);
+
+                    //光線に衝突したものの数だけ処理を繰り返します
+                    for (int k = 0; k < contacts; ++k)
+                    {
+                        //光線に衝突したもののコライダーを取得します
+                        Collider col = s_RaycastHitCache[k].collider;
+
+                        //コライダーが存在していれば、ダメージ処理を実行します
+                        if (col != null)
+                            CheckDamage(col, pts);
+                    }
+
+                    m_PreviousPos[i] = worldPos;
+
+#if UNITY_EDITOR
+                    pts.previousPositions.Add(m_PreviousPos[i]);
+#endif
+                }
+            }
         }
 
         /// <Summary>
@@ -162,7 +206,7 @@ namespace Gamekit3D
             }
 
             //衝突したのが武器を持っている者であれば処理を終了します
-            if (d.gameObject == _owner)
+            if (d.gameObject == m_Owner)
                 return true; //ignore self harm, but do not end the attack (we don't "bounce" off ourselves)
 
             //Inspectorで設定したターゲットレイヤーのオブジェクトであれば処理を終了します
@@ -189,9 +233,9 @@ namespace Gamekit3D
 
             data.amount = damage;
             data.damager = this;
-            data.direction = _direction.normalized;
-            data.damageSource = _owner.transform.position;
-            data.throwing = _isThrowingHit;
+            data.direction = m_Direction.normalized;
+            data.damageSource = m_Owner.transform.position;
+            data.throwing = m_IsThrowingHit;
             data.stopCamera = false;
 
             //ダメージを与えます
@@ -200,10 +244,10 @@ namespace Gamekit3D
             //攻撃がヒットした際のパーティクルを発生させます
             if (hitParticlePrefab != null)
             {
-                _particlesPool[_currentParticle].transform.position = pts.attackRoot.transform.position;
-                _particlesPool[_currentParticle].time = 0;
-                _particlesPool[_currentParticle].Play();
-                _currentParticle = (_currentParticle + 1) % PARTICLE_COUNT;
+                m_ParticlesPool[m_CurrentParticle].transform.position = pts.attackRoot.transform.position;
+                m_ParticlesPool[m_CurrentParticle].time = 0;
+                m_ParticlesPool[m_CurrentParticle].Play();
+                m_CurrentParticle = (m_CurrentParticle + 1) % PARTICLE_COUNT;
             }
 
             return true;
@@ -224,9 +268,9 @@ namespace Gamekit3D
                     Gizmos.DrawSphere(pts.attackRoot.position + worldPos, pts.radius);
                 }
 
-                if (pts.PreviousPositions.Count > 1)
+                if (pts.previousPositions.Count > 1)
                 {
-                    UnityEditor.Handles.DrawAAPolyLine(10, pts.PreviousPositions.ToArray());
+                    UnityEditor.Handles.DrawAAPolyLine(10, pts.previousPositions.ToArray());
                 }
             }
         }
