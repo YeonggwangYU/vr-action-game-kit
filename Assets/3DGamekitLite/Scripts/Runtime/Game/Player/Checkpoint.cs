@@ -15,7 +15,8 @@ namespace Gamekit3D
 
         private void OnTriggerEnter(Collider other)
         {
-            PlayerController controller = other.GetComponent<PlayerController>();
+            //XR OriginにEllenをアタッチしているため、GetComponentInChildrenに書き換えを行いました
+            PlayerController controller = other.GetComponentInChildren<PlayerController>();
 
             if (controller == null)
                 return;
