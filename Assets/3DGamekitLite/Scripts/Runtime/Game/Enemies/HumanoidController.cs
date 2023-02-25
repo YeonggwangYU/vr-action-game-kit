@@ -210,7 +210,7 @@ namespace Gamekit3D
                 transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
 
                 //ランダムに攻撃パターンを発生させます
-                int attackPattern = Random.Range(1, 6);
+                int attackPattern = Random.Range(1, 4);
                 switch (attackPattern)
                 {
                     case 1:
