@@ -9,24 +9,6 @@ namespace Gamekit3D
     public class HumanoidController : MonoBehaviour
     {
 
-        //文字列をハッシュという数字に予め変換しておくことで、処理の度に文字列化を行ないでよいようにして負荷を軽減します
-        //また、文字列の打ち間違いをしないようにします
-        private static readonly int AnimationGotHitHash = Animator.StringToHash("GotHit");
-        private static readonly int AnimationMovingHash = Animator.StringToHash("Moving");
-        private static readonly int AnimationAttack_from_leftHash = Animator.StringToHash("Attack_from_left");
-        private static readonly int AnimationDeadHash = Animator.StringToHash("Dead");
-
-
-        /// <Summary>
-        /// 敵が倒れるまでにかかる時間です
-        /// </Summary>
-        private readonly float _timeEnemyDead = 1.3f;
-
-        /// <Summary>
-        /// 敵を倒したときのスローを解除するまでの時間です
-        /// </Summary>
-        private readonly float _delayTime = 2.3f;
-
         /// <Summary>
         /// どの音を再生するかを設定します
         /// </Summary>
@@ -56,6 +38,11 @@ namespace Gamekit3D
         /// この変数に対してターゲットとしてプレイヤーを指定することで敵がプレイヤーに向かいます
         /// </Summary>
         [SerializeField] private NavMeshAgent _navMeshAgent;
+        
+        /// <Summary>
+        /// 敵がこちらに近づいてくるまでの距離を設定します
+        /// </Summary>
+        [SerializeField] private float noticeDistance = 10.0f;
 
         /// <Summary>
         /// この変数の中の値を変更することで対応したアニメーションが再生されます
@@ -71,6 +58,28 @@ namespace Gamekit3D
         /// この変数を実行することでエフェクトが実行されます
         /// </Summary>
         [SerializeField] private ParticleSystem _particleSystem;
+        
+        //文字列をハッシュという数字に予め変換しておくことで、処理の度に文字列化を行ないでよいようにして負荷を軽減します
+        //また、文字列の打ち間違いをしないようにします
+        private static readonly int AnimationGotHitHash = Animator.StringToHash("GotHit");
+        private static readonly int AnimationMovingHash = Animator.StringToHash("Moving");
+        private static readonly int AnimationAttackFromLeftHash = Animator.StringToHash("AttackFromLeft");
+        private static readonly int AnimationAttackFromRightHash = Animator.StringToHash("AttackFromRight");
+        private static readonly int AnimationAttackFromUpperHash = Animator.StringToHash("AttackFromUpper");
+        private static readonly int AnimationBattleRandomHash = Animator.StringToHash("BattleRandom");
+        
+        private static readonly int AnimationDeadHash = Animator.StringToHash("Dead");
+
+
+        /// <Summary>
+        /// 敵が倒れるまでにかかる時間です
+        /// </Summary>
+        private readonly float _timeEnemyDead = 1.3f;
+
+        /// <Summary>
+        /// 敵を倒したときのスローを解除するまでの時間です
+        /// </Summary>
+        private readonly float _delayTime = 2.3f;
 
         /// <Summary>
         /// 敵にダメージを与えてヒットポイントを減らします
@@ -166,8 +175,12 @@ namespace Gamekit3D
         /// </Summary>
         private void Update()
         {
-            //プレイヤーの位置まで移動します
-            _navMeshAgent.SetDestination(_target.position);
+            if (Vector3.Distance(_target.position, _navMeshAgent.transform.position) <
+                noticeDistance)
+            {
+               //プレイヤーの位置まで移動します
+               _navMeshAgent.SetDestination(_target.position);
+            }
 
             //敵が動いたら歩行アニメーションを再生します
             //NavMeshAgentの変数のパラメータであるvelocity.magnitudeが速度を表すので、それが少しでも動いたらというのを> 0.1fという形で表します
@@ -185,7 +198,6 @@ namespace Gamekit3D
             {
                 //プレイヤーの位置から自分の位置を引くことで、敵から見たプレイヤーの位置を算出します（★原理がよくわかっていない） https://gomafrontier.com/unity/2883
                 //y軸を固定することで敵が上を向かないようにします
-                //★transformが変数宣言無しで使える理由を解説する
                 var direction = _target.position - transform.position;
                 direction.y = 0;
 
@@ -194,14 +206,21 @@ namespace Gamekit3D
                 var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
                 transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
 
-                //攻撃フラグをオンにする
-                _animator.SetBool(AnimationAttack_from_leftHash, true);
+                //ランダムに攻撃パターンを発生させます
+                int attackPattern = Random.Range(1, 4);
+                switch (attackPattern)
+                {
+                    case 1:
+                    case 2:
+                    case 3:
+                        _animator.SetInteger(AnimationBattleRandomHash, attackPattern);
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        break;
+                }
 
-            }
-            else
-            {
-                //攻撃フラグをオフにする
-                _animator.SetBool(AnimationAttack_from_leftHash, false);
             }
         }
     }
