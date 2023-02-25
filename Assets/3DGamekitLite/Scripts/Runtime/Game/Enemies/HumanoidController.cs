@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 //NavMeshAgentを使うためにインポートします
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 namespace Gamekit3D
 {
@@ -59,13 +60,15 @@ namespace Gamekit3D
         /// </Summary>
         [SerializeField] private ParticleSystem _particleSystem;
         
+        /// <Summary>
+        /// 左右移動の速さを調整します
+        /// </Summary>
+        [SerializeField] private int leftRightMoveSpeed;
+        
         //文字列をハッシュという数字に予め変換しておくことで、処理の度に文字列化を行ないでよいようにして負荷を軽減します
         //また、文字列の打ち間違いをしないようにします
         private static readonly int AnimationGotHitHash = Animator.StringToHash("GotHit");
         private static readonly int AnimationMovingHash = Animator.StringToHash("Moving");
-        private static readonly int AnimationAttackFromLeftHash = Animator.StringToHash("AttackFromLeft");
-        private static readonly int AnimationAttackFromRightHash = Animator.StringToHash("AttackFromRight");
-        private static readonly int AnimationAttackFromUpperHash = Animator.StringToHash("AttackFromUpper");
         private static readonly int AnimationBattleRandomHash = Animator.StringToHash("BattleRandom");
         
         private static readonly int AnimationDeadHash = Animator.StringToHash("Dead");
@@ -207,21 +210,28 @@ namespace Gamekit3D
                 transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
 
                 //ランダムに攻撃パターンを発生させます
-                int attackPattern = Random.Range(1, 4);
+                int attackPattern = Random.Range(1, 6);
                 switch (attackPattern)
                 {
                     case 1:
                     case 2:
                     case 3:
+                        //ランダムに攻撃を行います
                         _animator.SetInteger(AnimationBattleRandomHash, attackPattern);
                         break;
                     case 4:
+                        //プレイヤーからみて右に動きます
+                        //参考：https://nekojara.city/unity-circular-motion
+                        transform.RotateAround(_target.position, Vector3.up, 360 / leftRightMoveSpeed * Time.deltaTime);
                         break;
                     case 5:
+                        //プレイヤーからみて左に動きます
+                        transform.RotateAround(_target.position, Vector3.down, 360 / leftRightMoveSpeed * Time.deltaTime);
                         break;
                 }
 
             }
         }
+
     }
 }
