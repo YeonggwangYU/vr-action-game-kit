@@ -242,7 +242,7 @@ namespace Gamekit3D
                 transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
 
                 //左右に移動中かを判定します
-                if (_animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f &&
+                if (IsLeftRightMoving() &&
                     _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "WalkForward")
                 {
                     Debug.Log($"if_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
@@ -282,7 +282,7 @@ namespace Gamekit3D
                 }
                 else
                 {
-                    Debug.Log($"else_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
+                    Debug.Log($"elseif_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
 
                 }
             }
