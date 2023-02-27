@@ -244,6 +244,14 @@ namespace Gamekit3D
                 //左右に移動中かを判定します
                 if (IsLeftRightMoving())
                 {
+                    /* 以下のif文を入れてもうまく動作しないため、検討します
+                    //攻撃アニメーションが終わっているかを判定します
+                    //https://tsubakit1.hateblo.jp/entry/2016/02/11/021743
+                    if (_animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1.0f)
+                    {
+                    }
+                    */
+
                     Debug.Log($"if_normalizedTime:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}");
 
                     // _rotateAxisに応じて移動方向が変わります。
