@@ -88,6 +88,11 @@ namespace Gamekit3D
         /// 敵を倒したときのスローを解除するまでの時間です
         /// </Summary>
         private readonly float _delayTime = 2.3f;
+
+        /// <Summary>
+        /// 敵の攻撃パターンを設定します
+        /// </Summary>
+        private int _attackPattern;
         
         /// <Summary>
         /// 敵の戦闘時の左右移動のための変数です
@@ -236,25 +241,31 @@ namespace Gamekit3D
                 var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
                 transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
 
+                //左右に移動中かを判定します
                 if (IsLeftRightMoving())
                 {
+                    Debug.Log($"if_normalizedTime:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}");
+
                     // _rotateAxisに応じて移動方向が変わります。
                     // Vector3.up:プレイヤーからみて右、Vector3.down:プレイヤーからみて左
                     //参考：https://nekojara.city/unity-circular-motion
-                    transform.RotateAround(_target.position, _rotateAxis, 360 / leftRightMoveSpeed * Time.deltaTime);
+                    transform.RotateAround(_target.position, _rotateAxis,
+                        360 / leftRightMoveSpeed * Time.deltaTime);
                 }
                 else
                 {
+                    Debug.Log($"else_normalizedTime:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}");
+
                     //ランダムに攻撃パターンを発生させます
-                    int attackPattern = Random.Range(1, 6);
-                    Debug.Log($"attackPattern:{attackPattern}");
-                    switch (attackPattern)
+                    _attackPattern = Random.Range(1, 6);
+                    Debug.Log($"attackPattern:{_attackPattern}");
+                    switch (_attackPattern)
                     {
                         case 1:
                         case 2:
                         case 3:
                             //ランダムに攻撃を行います
-                            _animator.SetInteger(AnimationBattleRandomHash, attackPattern);
+                            _animator.SetInteger(AnimationBattleRandomHash, _attackPattern);
                             break;
                         case 4:
                             //プレイヤーからみて右に動きます
