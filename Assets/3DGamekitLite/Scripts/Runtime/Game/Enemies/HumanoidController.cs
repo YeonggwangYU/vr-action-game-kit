@@ -65,6 +65,11 @@ namespace Gamekit3D
         /// </Summary>
         [SerializeField] private int leftRightMoveSpeed;
         
+        /// <Summary>
+        /// 物理演算を行うオブジェクトです
+        /// </Summary>
+        [SerializeField] private Rigidbody _rigidbody;
+        
         //文字列をハッシュという数字に予め変換しておくことで、処理の度に文字列化を行ないでよいようにして負荷を軽減します
         //また、文字列の打ち間違いをしないようにします
         private static readonly int AnimationGotHitHash = Animator.StringToHash("GotHit");
@@ -83,6 +88,15 @@ namespace Gamekit3D
         /// 敵を倒したときのスローを解除するまでの時間です
         /// </Summary>
         private readonly float _delayTime = 2.3f;
+        
+        /// <Summary>
+        /// 敵の戦闘時の左右移動のための変数です
+        /// </Summary>
+        private const float MovingWaitSec = 3f;
+        private float _movingWaitTimer = 0f;
+        private Vector3 _rotateAxis = Vector3.zero;
+
+
 
         /// <Summary>
         /// 敵にダメージを与えてヒットポイントを減らします
@@ -172,6 +186,19 @@ namespace Gamekit3D
             _audioSource.PlayOneShot(_se_death);
         }
 
+        /// <Summary>
+        /// 左右移動中か判定します
+        /// </Summary>
+        private bool IsLeftRightMoving()
+        {
+            // TODO: 以下、Timerを使った仮の判定。本来は移動アニメーションが終了してるかどうかで判定すべき。
+            if (_movingWaitTimer > 0f)
+            {
+                _movingWaitTimer -= Time.deltaTime;
+            }
+
+            return (_movingWaitTimer > 0f);
+        }
 
         /// <Summary>
         /// ゲームの起動中継続して実行される処理です
@@ -186,8 +213,8 @@ namespace Gamekit3D
             }
 
             //敵が動いたら歩行アニメーションを再生します
-            //NavMeshAgentの変数のパラメータであるvelocity.magnitudeが速度を表すので、それが少しでも動いたらというのを> 0.1fという形で表します
-            if (_navMeshAgent.velocity.magnitude > 0.1f)
+            //https://buravo46.hatenablog.com/entry/2014/09/07/154834
+            if (!(_rigidbody.IsSleeping()))
             {
                 _animator.SetBool(AnimationMovingHash, true);
             }
@@ -209,27 +236,38 @@ namespace Gamekit3D
                 var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
                 transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
 
-                //ランダムに攻撃パターンを発生させます
-                int attackPattern = Random.Range(1, 4);
-                switch (attackPattern)
+                if (IsLeftRightMoving())
                 {
-                    case 1:
-                    case 2:
-                    case 3:
-                        //ランダムに攻撃を行います
-                        _animator.SetInteger(AnimationBattleRandomHash, attackPattern);
-                        break;
-                    case 4:
-                        //プレイヤーからみて右に動きます
-                        //参考：https://nekojara.city/unity-circular-motion
-                        transform.RotateAround(_target.position, Vector3.up, 360 / leftRightMoveSpeed * Time.deltaTime);
-                        break;
-                    case 5:
-                        //プレイヤーからみて左に動きます
-                        transform.RotateAround(_target.position, Vector3.down, 360 / leftRightMoveSpeed * Time.deltaTime);
-                        break;
+                    // _rotateAxisに応じて移動方向が変わります。
+                    // Vector3.up:プレイヤーからみて右、Vector3.down:プレイヤーからみて左
+                    //参考：https://nekojara.city/unity-circular-motion
+                    transform.RotateAround(_target.position, _rotateAxis, 360 / leftRightMoveSpeed * Time.deltaTime);
                 }
-
+                else
+                {
+                    //ランダムに攻撃パターンを発生させます
+                    int attackPattern = Random.Range(1, 6);
+                    Debug.Log($"attackPattern:{attackPattern}");
+                    switch (attackPattern)
+                    {
+                        case 1:
+                        case 2:
+                        case 3:
+                            //ランダムに攻撃を行います
+                            _animator.SetInteger(AnimationBattleRandomHash, attackPattern);
+                            break;
+                        case 4:
+                            //プレイヤーからみて右に動きます
+                            _rotateAxis = Vector3.up;
+                            _movingWaitTimer = MovingWaitSec;
+                            break;
+                        case 5:
+                            //プレイヤーからみて左に動きます
+                            _rotateAxis = Vector3.down;
+                            _movingWaitTimer = MovingWaitSec;
+                            break;
+                    }
+                }
             }
         }
 
