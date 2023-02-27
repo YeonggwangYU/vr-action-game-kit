@@ -206,23 +206,6 @@ namespace Gamekit3D
         }
 
         /// <Summary>
-        /// 攻撃アニメーション中かを判定します
-        /// </Summary>
-        private bool IsAttacking()
-        {
-            if (_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "AttackFromLeft" ||
-                _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "AttackFromUpper" ||
-                _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "AttackFromRight" )
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <Summary>
         /// ゲームの起動中継続して実行される処理です
         /// </Summary>
         private void Update()
@@ -236,7 +219,7 @@ namespace Gamekit3D
 
             //敵が動いたら歩行アニメーションを再生します
             //https://buravo46.hatenablog.com/entry/2014/09/07/154834
-            if (_navMeshAgent.velocity.magnitude > 0.1f)
+            if (!(_rigidbody.IsSleeping()))
             {
                 _animator.SetBool(AnimationMovingHash, true);
             }
@@ -259,23 +242,20 @@ namespace Gamekit3D
                 transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
 
                 //左右に移動中かを判定します
-                if (IsLeftRightMoving())
+                if (_animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f &&
+                    _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "WalkForward")
                 {
-                    Debug.Log($"IsAttacking():{IsAttacking()}");
-                    if ( !(IsAttacking()))
-                    {
-                        // _rotateAxisに応じて移動方向が変わります。
-                        // Vector3.up:プレイヤーからみて右、Vector3.down:プレイヤーからみて左
-                        //参考：https://nekojara.city/unity-circular-motion
-                        transform.RotateAround(_target.position, _rotateAxis,
-                            360 / leftRightMoveSpeed * Time.deltaTime);
-                    }
+                    Debug.Log($"if_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
+                    
+                    // _rotateAxisに応じて移動方向が変わります。
+                    // Vector3.up:プレイヤーからみて右、Vector3.down:プレイヤーからみて左
+                    //参考：https://nekojara.city/unity-circular-motion
+                    transform.RotateAround(_target.position, _rotateAxis,
+                        360 / leftRightMoveSpeed * Time.deltaTime);
                 }
-
-                else if(_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Idle")
+                else if(_animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
                 {
-                    //Debug.Log($"else_normalizedTime:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}");
-                    Debug.Log($"clip.name:{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
+                    Debug.Log($"elseif_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
 
                     //ランダムに攻撃パターンを発生させます
                     _attackPattern = Random.Range(1, 6);
@@ -299,6 +279,11 @@ namespace Gamekit3D
                             _movingWaitTimer = MovingWaitSec;
                             break;
                     }
+                }
+                else
+                {
+                    Debug.Log($"else_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
+
                 }
             }
         }
