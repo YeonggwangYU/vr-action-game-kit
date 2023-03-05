@@ -241,49 +241,61 @@ namespace Gamekit3D
                 var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
                 transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
 
-                //左右に移動中かを判定します
-                if (IsLeftRightMoving() &&
-                    _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "WalkForward")
+                var currentClipName = _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+                var battleRandomValue = _animator.GetInteger(AnimationBattleRandomHash);
+                // 移動中
+                if (currentClipName == "WalkForward")
                 {
-                    Debug.Log($"if_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
-                    
-                    // _rotateAxisに応じて移動方向が変わります。
-                    // Vector3.up:プレイヤーからみて右、Vector3.down:プレイヤーからみて左
-                    //参考：https://nekojara.city/unity-circular-motion
-                    transform.RotateAround(_target.position, _rotateAxis,
-                        360 / leftRightMoveSpeed * Time.deltaTime);
-                }
-                else if(_animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
-                {
-                    Debug.Log($"elseif_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
-
-                    //ランダムに攻撃パターンを発生させます
-                    _attackPattern = Random.Range(1, 6);
-                    Debug.Log($"attackPattern:{_attackPattern}");
-                    switch (_attackPattern)
+                    //左右に移動中かを判定します
+                    if (IsLeftRightMoving())
                     {
-                        case 1:
-                        case 2:
-                        case 3:
-                            //ランダムに攻撃を行います
-                            _animator.SetInteger(AnimationBattleRandomHash, _attackPattern);
-                            break;
-                        case 4:
-                            //プレイヤーからみて右に動きます
-                            _rotateAxis = Vector3.up;
-                            _movingWaitTimer = MovingWaitSec;
-                            break;
-                        case 5:
-                            //プレイヤーからみて左に動きます
-                            _rotateAxis = Vector3.down;
-                            _movingWaitTimer = MovingWaitSec;
-                            break;
+                        //   Debug.Log($"if_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
+
+                        // _rotateAxisに応じて移動方向が変わります。
+                        // Vector3.up:プレイヤーからみて右、Vector3.down:プレイヤーからみて左
+                        //参考：https://nekojara.city/unity-circular-motion
+                        transform.RotateAround(_target.position, _rotateAxis,
+                            360 / leftRightMoveSpeed * Time.deltaTime);
+                    }
+                    // 次の行動を決められる状態
+                    else
+                    {
+                        // Debug.Log($"elseif_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
+
+                        //ランダムに攻撃パターンを発生させます
+                        _attackPattern = Random.Range(1, 6);
+                        Debug.Log($"attackPattern:{_attackPattern}");
+                        switch (_attackPattern)
+                        {
+                            case 1:
+                            case 2:
+                            case 3:
+                                //ランダムに攻撃を行います
+                                _animator.SetInteger(AnimationBattleRandomHash, _attackPattern);
+                                break;
+                            case 4:
+                                // 攻撃パターンをリセット
+                                _animator.SetInteger(AnimationBattleRandomHash, 0);
+                                //プレイヤーからみて右に動きます
+                                _rotateAxis = Vector3.up;
+                                _movingWaitTimer = MovingWaitSec;
+                                break;
+                            case 5:
+                                // 攻撃パターンをリセット
+                                _animator.SetInteger(AnimationBattleRandomHash, 0);
+                                //プレイヤーからみて左に動きます
+                                _rotateAxis = Vector3.down;
+                                _movingWaitTimer = MovingWaitSec;
+                                break;
+                        }
                     }
                 }
-                else
+                // 攻撃中
+                else if (
+                    (currentClipName == "AttackFromUpper") || (currentClipName == "AttackFromRight") || (currentClipName == "AttackFromLeft")
+                )
                 {
-                    Debug.Log($"elseif_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
-
+                    //Debug.Log($"Attacking!:{currentClipName}");
                 }
             }
         }
