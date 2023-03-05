@@ -276,6 +276,7 @@ namespace Gamekit3D
                                 //ランダムに攻撃を行います
                                 _animator.SetInteger(AnimationBattleRandomHash, _attackPattern);
                                 break;
+                            // 以下に加えて、AnimatorウィンドウのStateMachineBehaviourにおいても、Idle1のアニメーションになった際に攻撃パターンをリセットしています
                             case 4:
                                 // 攻撃パターンをリセット
                                 _animator.SetInteger(AnimationBattleRandomHash, 0);
