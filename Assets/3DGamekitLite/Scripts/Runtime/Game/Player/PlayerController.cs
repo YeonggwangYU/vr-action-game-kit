@@ -607,8 +607,18 @@ namespace Gamekit3D
             // If there is a checkpoint, move Ellen to it.
             if (m_CurrentCheckpoint != null)
             {
-                transform.position = m_CurrentCheckpoint.transform.position;
-                transform.rotation = m_CurrentCheckpoint.transform.rotation;
+                if (transform.root.name == "XR Origin")
+                {
+                    //EllenのボディがアタッチされているXR Origin自体の座標を移動します
+                    transform.root.position = m_CurrentCheckpoint.transform.position;
+                    transform.root.rotation = m_CurrentCheckpoint.transform.rotation;
+                }
+                else
+                {
+                    transform.position = m_CurrentCheckpoint.transform.position;
+                    transform.rotation = m_CurrentCheckpoint.transform.rotation;
+                }
+
             }
             else
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 //NavMeshAgentを使うためにインポートします
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 namespace Gamekit3D
 {
@@ -59,13 +60,20 @@ namespace Gamekit3D
         /// </Summary>
         [SerializeField] private ParticleSystem _particleSystem;
         
+        /// <Summary>
+        /// 左右移動の速さを調整します
+        /// </Summary>
+        [SerializeField] private int leftRightMoveSpeed;
+        
+        /// <Summary>
+        /// 物理演算を行うオブジェクトです
+        /// </Summary>
+        [SerializeField] private Rigidbody _rigidbody;
+        
         //文字列をハッシュという数字に予め変換しておくことで、処理の度に文字列化を行ないでよいようにして負荷を軽減します
         //また、文字列の打ち間違いをしないようにします
         private static readonly int AnimationGotHitHash = Animator.StringToHash("GotHit");
         private static readonly int AnimationMovingHash = Animator.StringToHash("Moving");
-        private static readonly int AnimationAttackFromLeftHash = Animator.StringToHash("AttackFromLeft");
-        private static readonly int AnimationAttackFromRightHash = Animator.StringToHash("AttackFromRight");
-        private static readonly int AnimationAttackFromUpperHash = Animator.StringToHash("AttackFromUpper");
         private static readonly int AnimationBattleRandomHash = Animator.StringToHash("BattleRandom");
         
         private static readonly int AnimationDeadHash = Animator.StringToHash("Dead");
@@ -80,6 +88,20 @@ namespace Gamekit3D
         /// 敵を倒したときのスローを解除するまでの時間です
         /// </Summary>
         private readonly float _delayTime = 2.3f;
+
+        /// <Summary>
+        /// 敵の攻撃パターンを設定します
+        /// </Summary>
+        private int _attackPattern;
+        
+        /// <Summary>
+        /// 敵の戦闘時の左右移動のための変数です
+        /// </Summary>
+        private const float MovingWaitSec = 3f;
+        private float _movingWaitTimer = 0f;
+        private Vector3 _rotateAxis = Vector3.zero;
+
+
 
         /// <Summary>
         /// 敵にダメージを与えてヒットポイントを減らします
@@ -169,6 +191,19 @@ namespace Gamekit3D
             _audioSource.PlayOneShot(_se_death);
         }
 
+        /// <Summary>
+        /// 左右移動中かを判定します
+        /// </Summary>
+        private bool IsLeftRightMoving()
+        {
+            // TODO: 以下、Timerを使った仮の判定。本来は移動アニメーションが終了してるかどうかで判定すべき。
+            if (_movingWaitTimer > 0f)
+            {
+                _movingWaitTimer -= Time.deltaTime;
+            }
+
+            return (_movingWaitTimer > 0f);
+        }
 
         /// <Summary>
         /// ゲームの起動中継続して実行される処理です
@@ -183,8 +218,8 @@ namespace Gamekit3D
             }
 
             //敵が動いたら歩行アニメーションを再生します
-            //NavMeshAgentの変数のパラメータであるvelocity.magnitudeが速度を表すので、それが少しでも動いたらというのを> 0.1fという形で表します
-            if (_navMeshAgent.velocity.magnitude > 0.1f)
+            //https://buravo46.hatenablog.com/entry/2014/09/07/154834
+            if (!(_rigidbody.IsSleeping()))
             {
                 _animator.SetBool(AnimationMovingHash, true);
             }
@@ -201,27 +236,73 @@ namespace Gamekit3D
                 var direction = _target.position - transform.position;
                 direction.y = 0;
 
-                //敵がプレイヤーの方向を向くようにする
-                //振り向く速さはLerp()の第三引数で調整する
+                //敵がプレイヤーの方向を向くようにします
+                //振り向く速さはLerp()の第三引数で調整します
                 var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
                 transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
 
-                //ランダムに攻撃パターンを発生させます
-                int attackPattern = Random.Range(1, 4);
-                switch (attackPattern)
-                {
-                    case 1:
-                    case 2:
-                    case 3:
-                        _animator.SetInteger(AnimationBattleRandomHash, attackPattern);
-                        break;
-                    case 4:
-                        break;
-                    case 5:
-                        break;
-                }
+                var currentClipName = _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+                var battleRandomValue = _animator.GetInteger(AnimationBattleRandomHash);
 
+                // 移動モーション中かどうかを判定します
+                if (currentClipName == "WalkForward")
+                {
+                    //左右に移動中かを判定します
+                    if (IsLeftRightMoving())
+                    {
+                        // _rotateAxisに応じて移動方向が変わります。
+                        // Vector3.up:プレイヤーからみて右、Vector3.down:プレイヤーからみて左
+                        //参考：https://nekojara.city/unity-circular-motion
+                        transform.RotateAround(_target.position, _rotateAxis,
+                            360 / leftRightMoveSpeed * Time.deltaTime);
+                    }
+                    else if(1 <= battleRandomValue && battleRandomValue <= 3)
+                    {
+                        // 攻撃への移行待ちです（何もしません）
+                    }
+                    // 次の行動を決められる状態です
+                    else
+                    {
+                        // Debug.Log($"elseif_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
+
+                        //ランダムに攻撃パターンを発生させます
+                        _attackPattern = Random.Range(1, 6);
+                        Debug.Log($"attackPattern:{_attackPattern}");
+                        switch (_attackPattern)
+                        {
+                            case 1:
+                            case 2:
+                            case 3:
+                                //ランダムに攻撃を行います
+                                _animator.SetInteger(AnimationBattleRandomHash, _attackPattern);
+                                break;
+                            // 以下に加えて、AnimatorウィンドウのStateMachineBehaviourにおいても、Idle1のアニメーションになった際に攻撃パターンをリセットしています
+                            case 4:
+                                // 攻撃パターンをリセット
+                                _animator.SetInteger(AnimationBattleRandomHash, 0);
+                                //プレイヤーからみて右に動きます
+                                _rotateAxis = Vector3.up;
+                                _movingWaitTimer = MovingWaitSec;
+                                break;
+                            case 5:
+                                // 攻撃パターンをリセット
+                                _animator.SetInteger(AnimationBattleRandomHash, 0);
+                                //プレイヤーからみて左に動きます
+                                _rotateAxis = Vector3.down;
+                                _movingWaitTimer = MovingWaitSec;
+                                break;
+                        }
+                    }
+                }
+                // 攻撃中です
+                else if (
+                    (currentClipName == "AttackFromUpper") || (currentClipName == "AttackFromRight") || (currentClipName == "AttackFromLeft")
+                )
+                {
+                    //現状は特に何もしません
+                }
             }
         }
+
     }
 }
