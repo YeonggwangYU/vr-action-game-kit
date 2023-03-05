@@ -236,28 +236,31 @@ namespace Gamekit3D
                 var direction = _target.position - transform.position;
                 direction.y = 0;
 
-                //敵がプレイヤーの方向を向くようにする
-                //振り向く速さはLerp()の第三引数で調整する
+                //敵がプレイヤーの方向を向くようにします
+                //振り向く速さはLerp()の第三引数で調整します
                 var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
                 transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
 
                 var currentClipName = _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
                 var battleRandomValue = _animator.GetInteger(AnimationBattleRandomHash);
-                // 移動中
+
+                // 移動モーション中かどうかを判定します
                 if (currentClipName == "WalkForward")
                 {
                     //左右に移動中かを判定します
                     if (IsLeftRightMoving())
                     {
-                        //   Debug.Log($"if_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
-
                         // _rotateAxisに応じて移動方向が変わります。
                         // Vector3.up:プレイヤーからみて右、Vector3.down:プレイヤーからみて左
                         //参考：https://nekojara.city/unity-circular-motion
                         transform.RotateAround(_target.position, _rotateAxis,
                             360 / leftRightMoveSpeed * Time.deltaTime);
                     }
-                    // 次の行動を決められる状態
+                    else if(1 <= battleRandomValue && battleRandomValue <= 3)
+                    {
+                        // 攻撃への移行待ちです（何もしません）
+                    }
+                    // 次の行動を決められる状態です
                     else
                     {
                         // Debug.Log($"elseif_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
@@ -290,12 +293,12 @@ namespace Gamekit3D
                         }
                     }
                 }
-                // 攻撃中
+                // 攻撃中です
                 else if (
                     (currentClipName == "AttackFromUpper") || (currentClipName == "AttackFromRight") || (currentClipName == "AttackFromLeft")
                 )
                 {
-                    //Debug.Log($"Attacking!:{currentClipName}");
+                    //現状は特に何もしません
                 }
             }
         }
