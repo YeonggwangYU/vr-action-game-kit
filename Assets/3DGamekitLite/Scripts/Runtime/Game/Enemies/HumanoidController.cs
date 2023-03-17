@@ -167,12 +167,12 @@ namespace Gamekit3D
         }
 
         /// <Summary>
-        /// 攻撃モーションの途中で呼び出されて、当たり判定を無効化する関数を呼び出します
+        /// 攻撃モーションの途中で呼び出されて、当たり判定を有効化する関数を呼び出します
         /// privateでも呼び出されることは可能です
         /// </Summary>
         private void OnAttackStart()
         {
-            _enemyWeaponController.EnableAttack();
+            _enemyWeaponController.EnableWeapon();
         }
 
         /// <Summary>
@@ -180,7 +180,24 @@ namespace Gamekit3D
         /// </Summary>
         private void OnAttackEnd()
         {
-            _enemyWeaponController.DisableAttack();
+            _enemyWeaponController.DisableWeapon();
+        }
+
+        /// <Summary>
+        /// ガードモーションの途中で呼び出されて、当たり判定を有効化する関数を呼び出します
+        /// privateでも呼び出されることは可能です
+        /// </Summary>
+        private void OnGuardStart()
+        {
+            _enemyWeaponController.EnableWeapon();
+        }
+
+        /// <Summary>
+        /// ガードモーションの途中で呼び出されて、Colliderを無効化することで当たり判定を消します
+        /// </Summary>
+        private void OnGuardEnd()
+        {
+            _enemyWeaponController.DisableWeapon();
         }
 
         /// <Summary>
@@ -263,8 +280,6 @@ namespace Gamekit3D
                     // 次の行動を決められる状態です
                     else
                     {
-                        // Debug.Log($"elseif_normalizedTime_clipname:{_animator.GetCurrentAnimatorStateInfo(0).normalizedTime}_{_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name}");
-
                         //ランダムに攻撃パターンを発生させます
                         _attackPattern = Random.Range(1, 6);
                         Debug.Log($"attackPattern:{_attackPattern}");

@@ -25,14 +25,14 @@ namespace Gamekit3D
         private void Start()
         {
             //攻撃モーションが始まるまでは当たり判定を無効化します
-            DisableAttack();
+            DisableWeapon();
         }
 
         /// <Summary>
         /// 武器のColliderを有効にします。
         /// 色々なシチュエーションで使えるように他のスクリプトから呼び出せるようにpublicにします。
         /// </Summary>
-        public void EnableAttack()
+        public void EnableWeapon()
         {
             _boxCollider.enabled = true;
         }
@@ -41,7 +41,7 @@ namespace Gamekit3D
         /// 武器のColliderを無効にします。
         /// 色々なシチュエーションで使えるように他のスクリプトから呼び出せるようにpublicにします。
         /// </Summary>
-        public void DisableAttack()
+        public void DisableWeapon()
         {
             _boxCollider.enabled = false;
         }
@@ -54,12 +54,27 @@ namespace Gamekit3D
             //当たったのがプレイヤーの武器かどうかを判定します
             if (other.gameObject.TryGetComponent<PlayerWeaponController>(out PlayerWeaponController _playerWeaponControllerIdentification))
             {
-                //敵の攻撃が当たったことを示すパラメーターをオンにします
-                //Triggerの場合は自動でオフになるため、Boolのようにfalseにする処理は必要ありません
-                _animator.SetTrigger(AnimationRepelledHash);
+                var currentClipName = _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+                
+                if ((currentClipName == "GuardLeft") || (currentClipName == "GuardRight") || (currentClipName == "GuardUpper"))
+                {
+                    //パラメータで設定した秒数プレイヤーの武器の当たり判定がなくなるようにします
+                    
+                    
+                    //敵の攻撃が当たり終わったので、武器の当たり判定をオフにします
+                    DisableWeapon();
+                    
+                }
+                else
+                {
+                    //敵の攻撃が当たったことを示すパラメーターをオンにします
+                    //Triggerの場合は自動でオフになるため、Boolのようにfalseにする処理は必要ありません
+                    _animator.SetTrigger(AnimationRepelledHash);
 
-                //敵の攻撃が当たり終わったので、武器の当たり判定をオフにします
-                DisableAttack();
+                    //敵の攻撃が当たり終わったので、武器の当たり判定をオフにします
+                    DisableWeapon();
+                }
+                
             }
         }
     }
