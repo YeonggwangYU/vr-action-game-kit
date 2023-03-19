@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 //NavMeshAgentを使うためにインポートします
 using UnityEngine.AI;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace Gamekit3D
 {
@@ -69,7 +71,7 @@ namespace Gamekit3D
         /// 物理演算を行うオブジェクトです
         /// </Summary>
         [SerializeField] private Rigidbody _rigidbody;
-        
+
         //文字列をハッシュという数字に予め変換しておくことで、処理の度に文字列化を行ないでよいようにして負荷を軽減します
         //また、文字列の打ち間違いをしないようにします
         private static readonly int AnimationGotHitHash = Animator.StringToHash("GotHit");
