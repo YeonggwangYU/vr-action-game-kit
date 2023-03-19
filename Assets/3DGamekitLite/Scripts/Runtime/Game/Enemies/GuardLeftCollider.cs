@@ -25,9 +25,5 @@ namespace Gamekit3D
             }
         }
 
-        private void OnCollisionEnter(Collision collision)
-        {
-            Debug.Log(collision);
-        }
     }
 }
