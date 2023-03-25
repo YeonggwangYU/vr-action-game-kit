@@ -113,10 +113,10 @@ namespace Gamekit3D
                 //Get animation from Collider other.
                 Animator enemyAnimator = other.gameObject.GetComponentInParent<Animator>();
                 Debug.Log($"PlayerWeaponController:OnTriggerEnter:enemyAnimator {enemyAnimator}");
-                Debug.Log($"PlayerWeaponController:OnTriggerEnter:enemyAnimator.GetCurrentAnimatorClipInfo(0).Length {enemyAnimator.GetCurrentAnimatorClipInfo(0).Length}");
+                Debug.Log($"PlayerWeaponController:OnTriggerEnter:enemyAnimator.GetCurrentAnimatorStateInfo(0).length {enemyAnimator.GetCurrentAnimatorStateInfo(0).length}");
 
                 // check enemy is playing animation
-                if (enemyAnimator.GetCurrentAnimatorClipInfo(0).Length != 0)
+                if (enemyAnimator.GetCurrentAnimatorStateInfo(0).length != 0)
                 {
                     string currentClipName = enemyAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
                     Debug.Log($"PlayerWeaponController:OnTriggerEnter:enemyAnimator.GetCurrentAnimatorClipInfo(0)[0] {enemyAnimator.GetCurrentAnimatorClipInfo(0)[0]}");
