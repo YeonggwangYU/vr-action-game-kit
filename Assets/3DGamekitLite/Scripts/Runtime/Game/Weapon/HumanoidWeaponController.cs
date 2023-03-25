@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,14 @@ namespace Gamekit3D
         /// この変数の中の値を変更することで武器の当たり判定の有無を操作します
         /// </Summary>
         [SerializeField] private BoxCollider _boxCollider;
+
+        /// <Summary>
+        /// attack point of the enemy weapon
+        /// </Summary>
+        [SerializeField] private int attackPoint = 1;
+
+        private Vector3 _direction;
+        private bool _isThrowingHit = false;
 
         private void Start()
         {
@@ -41,5 +50,34 @@ namespace Gamekit3D
             _boxCollider.enabled = false;
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            Debug.Log($"HumanoidWeaponController:OnCollisionEnter:collision.gameObject.name {other.gameObject.name}");
+
+            // if not collision to player, end method
+            if (other.gameObject.GetComponentInChildren<PlayerController>() == null)
+            {
+                return;
+            }
+            // if collision to player, apply damage
+            else if (other.gameObject.GetComponentInChildren<PlayerController>().TryGetComponent<PlayerController>(out PlayerController _playerControllerIdentification))
+            {
+                //select damage target
+                Damageable d = other.gameObject.GetComponentInChildren<Damageable>();
+
+                //与えるダメージの量や方向などを格納します
+                Damageable.DamageMessage data;
+
+                data.amount = attackPoint;
+                data.damager = this;
+                data.direction = _direction.normalized;
+                data.damageSource = this.transform.position;
+                data.throwing = _isThrowingHit;
+                data.stopCamera = false;
+
+                //ダメージを与えます
+                d.ApplyDamage(data);
+            }
+        }
     }
 }
