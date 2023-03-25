@@ -194,10 +194,9 @@ namespace Gamekit3D
         /// </Summary>
         private IEnumerator DelayCoroutine()
         {
-            // 敵が倒れるまで待ちます
+            // wait (parameter) second
             yield return new WaitForSecondsRealtime(playerWeaponEnableTime);
 
-            //時間の流れを戻します
             EnableAttack();
         }
 
