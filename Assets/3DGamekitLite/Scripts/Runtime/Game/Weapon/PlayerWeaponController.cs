@@ -92,6 +92,9 @@ namespace Gamekit3D
         /// </Summary>
         private void OnTriggerEnter(Collider other)
         {
+            // Log to verify operation 
+            Debug.Log($"PlayerWeaponController:OnTriggerEnter {other.gameObject.name}");
+            
             //当たったのが敵の武器かどうかを判定します
             if (other.gameObject.TryGetComponent<HumanoidWeaponController>(out HumanoidWeaponController _humanoidWeaponControllerIdentification))
             {
@@ -102,17 +105,22 @@ namespace Gamekit3D
                 _particleSystem.Play();
             }
 
+            //当たったのが敵のGuardLeftColliderかを判定します
+            //※GuardLeftColliderとHumanoidController両方に当たってしまうことがあるので、if else文にしてガードを優先します
+            if (other.gameObject.TryGetComponent<GuardLeftCollider>(out GuardLeftCollider guardLeftCollider))
+            {
+                // GuardLeftColliderのSetTriggerGuard()を呼び出し、ガードモーションさせます
+                guardLeftCollider.SetTriggerGuard(gameObject);
+            }
             //当たったのが敵かどうかを判定します
-            if (other.gameObject.TryGetComponent<HumanoidController>(out HumanoidController _humanoidControllerIdentification))
+            else if (other.gameObject.TryGetComponent<HumanoidController>(out HumanoidController _humanoidControllerIdentification))
             {
                 //コントローラーを振動させます。3つ目の引数が振動させる時間です
                 _inputDevice.SendHapticImpulse(0, 0.5f, 0.1f);
 
                 //当たり判定を無効化します
                 _meleeWeapon.EndAttack();
-
             }
-
         }
 
         private void OnTriggerExit(Collider other)

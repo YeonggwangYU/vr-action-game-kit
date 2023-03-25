@@ -14,16 +14,20 @@ namespace Gamekit3D
 
         private static readonly int AnimationGuardLeftHash = Animator.StringToHash("GuardLeft");
 
-        private void OnTriggerEnter(Collider other)
+        /// <Summary>
+        /// This method is used to make guard motions from the outside.
+        /// 外部からガードモーションをさせるためのメソッドです
+        /// </Summary>
+        public void SetTriggerGuard(GameObject playerObject)
         {
-            Debug.Log(other);
-            
-            if (other.gameObject.TryGetComponent<PlayerWeaponController>(
+            // Log to verify operation 
+            Debug.Log($"SetTriggerGuard:{playerObject}");
+
+            if (playerObject.TryGetComponent<PlayerWeaponController>(
                     out PlayerWeaponController _playerWeaponControllerIdentification))
             {
                 _animator.SetTrigger(AnimationGuardLeftHash);
             }
         }
-
     }
 }
