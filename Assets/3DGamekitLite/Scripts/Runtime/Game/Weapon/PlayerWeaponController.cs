@@ -31,13 +31,19 @@ namespace Gamekit3D
         /// </Summary>
         [SerializeField] private MeleeWeapon _meleeWeapon;
 
+        /// <Summary>
+        /// time until enable player weapon when guarded with enemy weapon
+        /// </Summary>
+        [SerializeField] private float playerWeaponEnableTime = 1.0f;
+
         //コントローラーを振動させる際に使用する変数です
         private InputDevice _inputDevice;
 
-        private void Start()
-        {
+        /// <Summary>
+        /// アニメーションのパラメータの打ち間違いを防ぐため、変数に格納してSetTriggerに渡します
+        /// </Summary>
+        private static readonly int AnimationRepelledHash = Animator.StringToHash("Repelled");
 
-        }
 
         /// <Summary>
         /// isTriggerを設定することで武器を持ったときにプレイヤーが勝手に移動しないようにし、移動したときに武器がブレないようにします
@@ -103,6 +109,41 @@ namespace Gamekit3D
 
                 //火花を散らせます
                 _particleSystem.Play();
+                
+                //Get animation from Collider other.
+                Animator enemyAnimator = other.gameObject.GetComponentInParent<Animator>();
+                Debug.Log($"PlayerWeaponController:OnTriggerEnter:enemyAnimator {enemyAnimator}");
+                Debug.Log($"PlayerWeaponController:OnTriggerEnter:enemyAnimator.GetCurrentAnimatorClipInfo(0).Length {enemyAnimator.GetCurrentAnimatorClipInfo(0).Length}");
+
+                // check enemy is playing animation
+                if (enemyAnimator.GetCurrentAnimatorClipInfo(0).Length != 0)
+                {
+                    string currentClipName = enemyAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+                    Debug.Log($"PlayerWeaponController:OnTriggerEnter:enemyAnimator.GetCurrentAnimatorClipInfo(0)[0] {enemyAnimator.GetCurrentAnimatorClipInfo(0)[0]}");
+
+                    // if Enemy is attacking, play enemy's Repell animation
+                    if((currentClipName == "AttackFromLeft") || (currentClipName == "AttackFromRight") ||
+                       (currentClipName == "AttackFromUpper"))
+                    {
+                        //敵の攻撃が当たったことを示すパラメーターをオンにします
+                        //Triggerの場合は自動でオフになるため、Boolのようにfalseにする処理は必要ありません
+                        enemyAnimator.SetTrigger(AnimationRepelledHash);
+                    
+                    }
+                    // if Enemy is guarding,  disable player weopon (parameter) seconds 
+                    else if ((currentClipName == "GuardLeft") || (currentClipName == "GuardRight") ||
+                             (currentClipName == "GuardUpper"))
+                    {
+                        DisableIsTrigger();
+                        StartCoroutine(DelayCoroutine());
+                    }
+                    else
+                    {
+                        // nothing to do
+                    }
+
+                }
+                
             }
 
             //当たったのが敵のGuardLeftColliderかを判定します
@@ -130,9 +171,20 @@ namespace Gamekit3D
             {
                 //当たり判定を無効化します
                 _meleeWeapon.BeginAttack(true);
-
             }
-
         }
+        
+        /// <Summary>
+        /// Enable player weopon after (parameter) seconds
+        /// </Summary>
+        private IEnumerator DelayCoroutine()
+        {
+            // 敵が倒れるまで待ちます
+            yield return new WaitForSecondsRealtime(playerWeaponEnableTime);
+
+            //時間の流れを戻します
+            EnableIsTrigger();
+        }
+
     }
 }

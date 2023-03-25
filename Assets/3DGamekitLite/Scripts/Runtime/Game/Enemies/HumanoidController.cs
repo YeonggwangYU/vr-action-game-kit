@@ -43,7 +43,7 @@ namespace Gamekit3D
         [SerializeField] private NavMeshAgent _navMeshAgent;
         
         /// <Summary>
-        /// 敵がこちらに近づいてくるまでの距離を設定します
+        /// 敵がこちらに気づいて近づいてくる距離を設定します
         /// </Summary>
         [SerializeField] private float noticeDistance = 10.0f;
 
