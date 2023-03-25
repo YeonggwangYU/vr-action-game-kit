@@ -61,6 +61,21 @@ namespace Gamekit3D
             _collider.isTrigger = false;
         }
 
+        /// <Summary>
+        /// enable player weapon attack.
+        /// </Summary>
+        private void EnableAttack()
+        {
+            _collider.enabled = true;
+        }
+
+        /// <Summary>
+        /// disable player weapon attack.
+        /// </Summary>
+        private void DisableAttack()
+        {
+            _collider.enabled = false;
+        }
 
         /// <Summary>
         /// 左手のXR Ray Interactorから呼び出され、武器を持ったのが左手であると設定します
@@ -134,7 +149,7 @@ namespace Gamekit3D
                     else if ((currentClipName == "GuardLeft") || (currentClipName == "GuardRight") ||
                              (currentClipName == "GuardUpper"))
                     {
-                        DisableIsTrigger();
+                        DisableAttack();
                         StartCoroutine(DelayCoroutine());
                     }
                     else
@@ -183,7 +198,7 @@ namespace Gamekit3D
             yield return new WaitForSecondsRealtime(playerWeaponEnableTime);
 
             //時間の流れを戻します
-            EnableIsTrigger();
+            EnableAttack();
         }
 
     }
