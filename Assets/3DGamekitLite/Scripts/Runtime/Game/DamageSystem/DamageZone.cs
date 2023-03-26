@@ -20,8 +20,9 @@ namespace Gamekit3D
         private void OnTriggerStay(Collider other)
         {
             var d = other.GetComponent<Damageable>();
-            if (d == null)
-                return;
+
+            //process for vr 
+            var d_vr = other.GetComponentInChildren<Damageable>();
 
             var msg = new Damageable.DamageMessage()
             {
@@ -31,7 +32,15 @@ namespace Gamekit3D
                 stopCamera = stopCamera
             };
 
-            d.ApplyDamage(msg);
+            if (d != null)
+            {
+                d.ApplyDamage(msg);
+            }
+            //process for vr 
+            else if (d_vr != null)
+            {
+                d_vr.ApplyDamage(msg);
+            }
         }
     } 
 }
