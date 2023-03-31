@@ -126,7 +126,7 @@ namespace Gamekit3D
                 _particleSystem.Play();
                 
                 //Get animation from Collider other.
-                Animator enemyAnimator = _humanoidWeaponControllerIdentification.GetHumanoidAnimator();
+                Animator enemyAnimator = other.gameObject.GetComponentInParent<Animator>();
                 Debug.Log($"PlayerWeaponController:OnTriggerEnter:enemyAnimator {enemyAnimator}");
                 Debug.Log($"PlayerWeaponController:OnTriggerEnter:enemyAnimator.GetCurrentAnimatorStateInfo(0).length {enemyAnimator.GetCurrentAnimatorStateInfo(0).length}");
 
