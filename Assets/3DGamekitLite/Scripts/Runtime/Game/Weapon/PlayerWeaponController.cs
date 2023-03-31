@@ -34,7 +34,7 @@ namespace Gamekit3D
         /// <Summary>
         /// time until enable player weapon when guarded with enemy weapon
         /// </Summary>
-        [SerializeField] private float playerWeaponEnableTime = 1.0f;
+        [SerializeField] private float playerWeaponEnableTime;
 
         //コントローラーを振動させる際に使用する変数です
         private InputDevice _inputDevice;
@@ -127,14 +127,11 @@ namespace Gamekit3D
                 
                 //Get animation from Collider other.
                 Animator enemyAnimator = _humanoidWeaponControllerIdentification.GetHumanoidAnimator();
-                Debug.Log($"PlayerWeaponController:OnTriggerEnter:enemyAnimator {enemyAnimator}");
-                Debug.Log($"PlayerWeaponController:OnTriggerEnter:enemyAnimator.GetCurrentAnimatorStateInfo(0).length {enemyAnimator.GetCurrentAnimatorStateInfo(0).length}");
 
                 // check enemy is playing animation
                 if (enemyAnimator.GetCurrentAnimatorStateInfo(0).length != 0)
                 {
                     string currentClipName = enemyAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
-                    Debug.Log($"PlayerWeaponController:OnTriggerEnter:enemyAnimator.GetCurrentAnimatorClipInfo(0)[0] {enemyAnimator.GetCurrentAnimatorClipInfo(0)[0]}");
 
                     // if Enemy is attacking, play enemy's Repell animation
                     if((currentClipName == "AttackFromLeft") || (currentClipName == "AttackFromRight") ||
@@ -149,7 +146,12 @@ namespace Gamekit3D
                     else if ((currentClipName == "GuardLeft") || (currentClipName == "GuardRight") ||
                              (currentClipName == "GuardUpper"))
                     {
-                        DisableAttack();
+                        // Disable hit damage.
+                        DisableIsTrigger();
+                        // Disable hit effect.
+                        _meleeWeapon.EndAttack();
+
+                        Debug.Log($"PlayerWeaponController:OnTriggerEnter:DisableAttack");
                         StartCoroutine(DelayCoroutine());
                     }
                     else
@@ -197,7 +199,12 @@ namespace Gamekit3D
             // wait (parameter) second
             yield return new WaitForSecondsRealtime(playerWeaponEnableTime);
 
-            EnableAttack();
+            // Enable hit damage.
+            EnableIsTrigger();
+            // Enable hit effect.
+            _meleeWeapon.BeginAttack(true);
+            Debug.Log($"PlayerWeaponController:OnTriggerEnter:EnableAttack");
+
         }
 
     }

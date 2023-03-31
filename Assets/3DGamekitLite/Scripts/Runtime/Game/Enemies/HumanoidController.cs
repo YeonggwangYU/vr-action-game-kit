@@ -125,6 +125,8 @@ namespace Gamekit3D
             //当たったのがプレイヤーの武器かどうかを判定します
             if (other.gameObject.TryGetComponent<PlayerWeaponController>(out PlayerWeaponController _playerWeaponControllerIdentification))
             {
+                Debug.Log($"HumanoidController:OnTriggerEnter:AttackHit");
+                
                 //敵に攻撃がヒットした音を鳴らします
                 _audioSource.PlayOneShot(_se_attack_hit);
 
