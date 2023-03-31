@@ -49,7 +49,13 @@ namespace Gamekit3D
         {
             _boxCollider.enabled = false;
         }
-
+        
+        // 外部から_animatorを取得できる処理を追加
+        public Animator GetHumanoidAnimator()
+        {
+            return _animator;
+        }
+        
         private void OnTriggerEnter(Collider other)
         {
             Debug.Log($"HumanoidWeaponController:OnCollisionEnter:collision.gameObject.name {other.gameObject.name}");
