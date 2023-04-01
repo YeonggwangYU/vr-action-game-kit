@@ -127,6 +127,12 @@ namespace Gamekit3D
             {
                 Debug.Log($"HumanoidController:OnTriggerEnter:AttackHit");
                 
+                //if hit to Guard Collider, do nothing.
+                if (this.gameObject.GetComponentInChildren<GuardLeftCollider>().TryGetComponent<GuardLeftCollider>(out GuardLeftCollider guardLeftCollider))
+                {
+                    return;
+                }
+
                 //敵に攻撃がヒットした音を鳴らします
                 _audioSource.PlayOneShot(_se_attack_hit);
 
