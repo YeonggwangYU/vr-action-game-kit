@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -11,25 +12,25 @@ namespace Gamekit3D
         /// <Summary>
         /// どの音を再生するかを設定します
         /// </Summary>
-        [SerializeField] private AudioClip _se_sword_collision;
+        [SerializeField] private AudioClip seSwordCollision;
 
         //音を再生するためのコンポーネントの情報を格納する変数です
-        [SerializeField] private AudioSource _audioSource;
+        [SerializeField] private AudioSource audioSource;
 
         /// <Summary>
         /// この変数を実行することでエフェクトが実行されます
         /// </Summary>
-        [SerializeField] private ParticleSystem _particleSystem;
+        [SerializeField] private ParticleSystem weaponParticleSystem;
 
         /// <Summary>
         /// Colliderの操作を行うための変数です
         /// </Summary>
-        [SerializeField] private Collider _collider;
+        [SerializeField] private Collider weaponCollider;
 
         /// <Summary>
         /// 武器の当たり判定の有効/無効を切り替えるための変数です
         /// </Summary>
-        [SerializeField] private MeleeWeapon _meleeWeapon;
+        [SerializeField] private MeleeWeapon meleeWeapon;
 
         /// <Summary>
         /// time until enable player weapon when guarded with enemy weapon
@@ -50,7 +51,7 @@ namespace Gamekit3D
         /// </Summary>
         private void EnableIsTrigger()
         {
-            _collider.isTrigger = true;
+            weaponCollider.isTrigger = true;
         }
 
         /// <Summary>
@@ -58,7 +59,7 @@ namespace Gamekit3D
         /// </Summary>
         private void DisableIsTrigger()
         {
-            _collider.isTrigger = false;
+            weaponCollider.isTrigger = false;
         }
 
         /// <Summary>
@@ -66,7 +67,7 @@ namespace Gamekit3D
         /// </Summary>
         private void EnableAttack()
         {
-            _collider.enabled = true;
+            weaponCollider.enabled = true;
         }
 
         /// <Summary>
@@ -74,7 +75,7 @@ namespace Gamekit3D
         /// </Summary>
         private void DisableAttack()
         {
-            _collider.enabled = false;
+            weaponCollider.enabled = false;
         }
 
         /// <Summary>
@@ -120,10 +121,10 @@ namespace Gamekit3D
             if (other.gameObject.TryGetComponent<HumanoidWeaponController>(out HumanoidWeaponController _humanoidWeaponControllerIdentification))
             {
                 //武器が衝突する音を鳴らします
-                _audioSource.PlayOneShot(_se_sword_collision);
+                audioSource.PlayOneShot(seSwordCollision);
 
                 //火花を散らせます
-                _particleSystem.Play();
+                weaponParticleSystem.Play();
                 
                 //Get animation from Collider other.
                 Animator enemyAnimator = _humanoidWeaponControllerIdentification.GetHumanoidAnimator();
@@ -147,9 +148,9 @@ namespace Gamekit3D
                              (currentClipName == "GuardUpper"))
                     {
                         // Disable hit damage.
-                        DisableIsTrigger();
+                        DisableAttack();
                         // Disable hit effect.
-                        _meleeWeapon.EndAttack();
+                        meleeWeapon.EndAttack();
 
                         Debug.Log($"PlayerWeaponController:OnTriggerEnter:DisableAttack");
                         StartCoroutine(DelayCoroutine());
@@ -176,8 +177,8 @@ namespace Gamekit3D
                 //コントローラーを振動させます。3つ目の引数が振動させる時間です
                 _inputDevice.SendHapticImpulse(0, 0.5f, 0.1f);
 
-                //当たり判定を無効化します
-                _meleeWeapon.EndAttack();
+                // Disable hit effect.
+                meleeWeapon.EndAttack();
             }
         }
 
@@ -186,8 +187,8 @@ namespace Gamekit3D
             //当たったのが敵かどうかを判定します
             if (other.gameObject.TryGetComponent<HumanoidController>(out HumanoidController _humanoidControllerIdentification))
             {
-                //当たり判定を無効化します
-                _meleeWeapon.BeginAttack(true);
+                // Enable hit effect
+                meleeWeapon.BeginAttack(true);
             }
         }
         
@@ -200,9 +201,10 @@ namespace Gamekit3D
             yield return new WaitForSecondsRealtime(playerWeaponEnableTime);
 
             // Enable hit damage.
-            EnableIsTrigger();
+            EnableAttack();
             // Enable hit effect.
-            _meleeWeapon.BeginAttack(true);
+            meleeWeapon.BeginAttack(true);
+            
             Debug.Log($"PlayerWeaponController:OnTriggerEnter:EnableAttack");
 
         }
