@@ -29,5 +29,6 @@ namespace Gamekit3D
                 _animator.SetTrigger(AnimationGuardLeftHash);
             }
         }
+
     }
 }
