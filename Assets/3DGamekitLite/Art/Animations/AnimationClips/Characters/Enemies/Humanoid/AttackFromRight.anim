@@ -61384,14 +61384,14 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.053305488
-    functionName: OnAttackStart
+    functionName: OnActionStart
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 1
     messageOptions: 0
   - time: 0.19904839
-    functionName: OnAttackEnd
+    functionName: OnActionEnd
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

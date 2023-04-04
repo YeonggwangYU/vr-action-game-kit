@@ -27,11 +27,6 @@ namespace Gamekit3D
         [SerializeField] private Transform _target;
 
         /// <Summary>
-        /// この変数に対して敵の武器を設定することで、武器に付与されたスクリプトの関数を呼び出せるようになります
-        /// </Summary>
-        [SerializeField] private HumanoidWeaponController _enemyWeaponController;
-
-        /// <Summary>
         /// 敵のヒットポイントが0以下になることで敵が倒れてリスポーンします
         /// 敵のヒットポイントを半減させる処理などを想定して小数点を扱える型にします
         /// </Summary>
@@ -50,7 +45,7 @@ namespace Gamekit3D
         /// <Summary>
         /// この変数の中の値を変更することで対応したアニメーションが再生されます
         /// </Summary>
-        [SerializeField] private Animator _animator;
+        [SerializeField] public Animator animator;
 
         /// <Summary>
         /// スローの速さを調整します
@@ -121,7 +116,6 @@ namespace Gamekit3D
         /// </Summary>
         private void OnTriggerEnter(Collider other)
         {
-            
             //当たったのがプレイヤーの武器かどうかを判定します
             if (other.gameObject.TryGetComponent<PlayerWeaponController>(out PlayerWeaponController _playerWeaponControllerIdentification))
             {
@@ -143,14 +137,14 @@ namespace Gamekit3D
                     _particleSystem.Play();
 
                     //敵が倒れるモーションを再生します
-                    _animator.SetTrigger(AnimationDeadHash);
+                    animator.SetTrigger(AnimationDeadHash);
 
                     //倒れるモーションを待ってから敵を消滅させます
                     Destroy(gameObject, _timeEnemyDead);
                 }
 
                 //敵の攻撃が当たったことを示すパラメーターをオンにします
-                _animator.SetTrigger(AnimationGotHitHash);
+                animator.SetTrigger(AnimationGotHitHash);
 
             }
         }
@@ -168,40 +162,6 @@ namespace Gamekit3D
 
             //時間の流れを戻します
             Time.timeScale = 1.0f;
-        }
-
-        /// <Summary>
-        /// 攻撃モーションの途中で呼び出されて、当たり判定を有効化する関数を呼び出します
-        /// privateでも呼び出されることは可能です
-        /// </Summary>
-        private void OnAttackStart()
-        {
-            _enemyWeaponController.EnableWeapon();
-        }
-
-        /// <Summary>
-        /// 攻撃モーションの途中で呼び出されて、Colliderを無効化することで当たり判定を消します
-        /// </Summary>
-        private void OnAttackEnd()
-        {
-            _enemyWeaponController.DisableWeapon();
-        }
-
-        /// <Summary>
-        /// ガードモーションの途中で呼び出されて、当たり判定を有効化する関数を呼び出します
-        /// privateでも呼び出されることは可能です
-        /// </Summary>
-        private void OnGuardStart()
-        {
-            _enemyWeaponController.EnableWeapon();
-        }
-
-        /// <Summary>
-        /// ガードモーションの途中で呼び出されて、Colliderを無効化することで当たり判定を消します
-        /// </Summary>
-        private void OnGuardEnd()
-        {
-            _enemyWeaponController.DisableWeapon();
         }
 
         /// <Summary>
@@ -242,11 +202,11 @@ namespace Gamekit3D
             //https://buravo46.hatenablog.com/entry/2014/09/07/154834
             if (!(_rigidbody.IsSleeping()))
             {
-                _animator.SetBool(AnimationMovingHash, true);
+                animator.SetBool(AnimationMovingHash, true);
             }
             else
             {
-                _animator.SetBool(AnimationMovingHash, false);
+                animator.SetBool(AnimationMovingHash, false);
             }
 
             //プレイヤーと敵の距離がNavMeshAgentで設定している停止距離より少し近くなったら敵が攻撃を開始します
@@ -262,8 +222,8 @@ namespace Gamekit3D
                 var lookRotation = Quaternion.LookRotation(direction, Vector3.up);
                 transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, 0.1f);
 
-                var currentClipName = _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
-                var battleRandomValue = _animator.GetInteger(AnimationBattleRandomHash);
+                var currentClipName = animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+                var battleRandomValue = animator.GetInteger(AnimationBattleRandomHash);
 
                 // 移動モーション中かどうかを判定します
                 if (currentClipName == "WalkForward")
@@ -293,19 +253,19 @@ namespace Gamekit3D
                             case 2:
                             case 3:
                                 //ランダムに攻撃を行います
-                                _animator.SetInteger(AnimationBattleRandomHash, _attackPattern);
+                                animator.SetInteger(AnimationBattleRandomHash, _attackPattern);
                                 break;
                             // 以下に加えて、AnimatorウィンドウのStateMachineBehaviourにおいても、Idle1のアニメーションになった際に攻撃パターンをリセットしています
                             case 4:
                                 // 攻撃パターンをリセット
-                                _animator.SetInteger(AnimationBattleRandomHash, 0);
+                                animator.SetInteger(AnimationBattleRandomHash, 0);
                                 //プレイヤーからみて右に動きます
                                 _rotateAxis = Vector3.up;
                                 _movingWaitTimer = MovingWaitSec;
                                 break;
                             case 5:
                                 // 攻撃パターンをリセット
-                                _animator.SetInteger(AnimationBattleRandomHash, 0);
+                                animator.SetInteger(AnimationBattleRandomHash, 0);
                                 //プレイヤーからみて左に動きます
                                 _rotateAxis = Vector3.down;
                                 _movingWaitTimer = MovingWaitSec;

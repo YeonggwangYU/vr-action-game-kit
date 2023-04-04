@@ -111,6 +111,18 @@ namespace Gamekit3D
         }
 
         /// <Summary>
+        /// play sound and particle when player weapon hit to enemy weapon.
+        /// </Summary>
+        private void OnHitEnemyWeapon()
+        {
+            //武器が衝突する音を鳴らします
+            audioSource.PlayOneShot(seSwordCollision);
+
+            //火花を散らせます
+            weaponParticleSystem.Play();
+        }
+
+        /// <Summary>
         /// プレイヤーの武器が敵の武器に設定したColliderに触れると火花を散らせて衝突音を鳴らします
         /// プレイヤーの武器が敵本体に設定したColliderに触れるとコントローラーを振動させます
         /// 移動時にも武器がブレないようにIs Triggerをオンにしているため、衝突判定を取るにはOnTriggerEnterを使用します
@@ -123,12 +135,6 @@ namespace Gamekit3D
             //当たったのが敵の武器かどうかを判定します
             if (other.gameObject.TryGetComponent<HumanoidWeaponController>(out HumanoidWeaponController _humanoidWeaponControllerIdentification))
             {
-                //武器が衝突する音を鳴らします
-                audioSource.PlayOneShot(seSwordCollision);
-
-                //火花を散らせます
-                weaponParticleSystem.Play();
-                
                 //Get animation from Collider other.
                 Animator enemyAnimator = _humanoidWeaponControllerIdentification.GetHumanoidAnimator();
 
@@ -141,6 +147,8 @@ namespace Gamekit3D
                     if((currentClipName == "AttackFromLeft") || (currentClipName == "AttackFromRight") ||
                        (currentClipName == "AttackFromUpper"))
                     {
+                        OnHitEnemyWeapon();
+                        
                         //敵の攻撃を弾かれたモーションをオンにします
                         enemyAnimator.SetTrigger(AnimationRepelledHash);
                     
@@ -149,6 +157,8 @@ namespace Gamekit3D
                     else if ((currentClipName == "GuardLeft") || (currentClipName == "GuardRight") ||
                              (currentClipName == "GuardUpper"))
                     {
+                        OnHitEnemyWeapon();
+
                         // Disable hit damage.
                         DisableAttack();
                         // Disable hit effect.
