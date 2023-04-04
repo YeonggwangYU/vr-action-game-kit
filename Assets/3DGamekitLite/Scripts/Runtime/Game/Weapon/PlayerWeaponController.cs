@@ -85,6 +85,9 @@ namespace Gamekit3D
         {
             EnableIsTrigger();
             _inputDevice = InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
+            
+            Debug.Log($"PlayerWeaponController:OnSelectEnteredLeftHand:_inputDevice:{_inputDevice.name}");
+            
         }
 
         /// <Summary>
@@ -138,8 +141,7 @@ namespace Gamekit3D
                     if((currentClipName == "AttackFromLeft") || (currentClipName == "AttackFromRight") ||
                        (currentClipName == "AttackFromUpper"))
                     {
-                        //敵の攻撃が当たったことを示すパラメーターをオンにします
-                        //Triggerの場合は自動でオフになるため、Boolのようにfalseにする処理は必要ありません
+                        //敵の攻撃を弾かれたモーションをオンにします
                         enemyAnimator.SetTrigger(AnimationRepelledHash);
                     
                     }
@@ -174,6 +176,8 @@ namespace Gamekit3D
             //当たったのが敵かどうかを判定します
             else if (other.gameObject.TryGetComponent<HumanoidController>(out HumanoidController _humanoidControllerIdentification))
             {
+                Debug.Log($"PlayerWeaponController:OnTriggerEnter:_inputDevice:{_inputDevice.name}");
+                
                 //コントローラーを振動させます。3つ目の引数が振動させる時間です
                 _inputDevice.SendHapticImpulse(0, 0.5f, 0.1f);
 
