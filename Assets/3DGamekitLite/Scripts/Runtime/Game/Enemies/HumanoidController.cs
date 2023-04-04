@@ -98,14 +98,13 @@ namespace Gamekit3D
         private float _movingWaitTimer = 0f;
         private Vector3 _rotateAxis = Vector3.zero;
 
-
-
         /// <Summary>
         /// 敵にダメージを与えてヒットポイントを減らします
         /// 将来的にステータス異常などプレイヤーの武器以外からのダメージを想定してパブリックにします
         /// </Summary>
         public float Damage(float inputEnemyHitPoint)
         {
+            
             inputEnemyHitPoint--;
             return inputEnemyHitPoint;
         }

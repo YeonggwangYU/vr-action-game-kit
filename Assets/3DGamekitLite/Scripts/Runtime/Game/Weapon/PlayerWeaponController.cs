@@ -177,6 +177,7 @@ namespace Gamekit3D
             }
 
             //当たったのが敵のGuardLeftColliderかを判定します
+            //PlayerWeaponから呼び出すのは、敵のコンポーネント側では自分がどのコンポーネントのコライダーかを判別できないためです
             //※GuardLeftColliderとHumanoidController両方に当たってしまうことがあるので、if else文にしてガードを優先します
             if (other.gameObject.TryGetComponent<GuardLeftCollider>(out GuardLeftCollider guardLeftCollider))
             {
