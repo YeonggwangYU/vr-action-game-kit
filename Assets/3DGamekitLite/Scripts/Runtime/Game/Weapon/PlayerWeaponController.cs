@@ -189,6 +189,11 @@ namespace Gamekit3D
                 // Execute guard motion.
                 guardRightCollider.SetTriggerGuard(gameObject);
             }
+            else if (other.gameObject.TryGetComponent<GuardUpperCollider>(out GuardUpperCollider guardUpperCollider))
+            {
+                // Execute guard motion.
+                guardUpperCollider.SetTriggerGuard(gameObject);
+            }
             //当たったのが敵かどうかを判定します
             else if (other.gameObject.TryGetComponent<HumanoidController>(out HumanoidController _humanoidControllerIdentification))
             {
