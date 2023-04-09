@@ -17,12 +17,22 @@ namespace Gamekit3D
             {
                 pc.Die(new Damageable.DamageMessage());
             }
+
+            //process for vr 
+            var pc_vr = other.GetComponentInChildren<PlayerController>();
+            if (pc_vr != null)
+            {
+                pc_vr.Die(new Damageable.DamageMessage());
+            }
+            
             if (audio != null)
             {
                 audio.transform.position = other.transform.position;
                 if (!audio.isPlaying)
                     audio.Play();
             }
+            
+            
         }
 
         void Reset()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,11 +7,6 @@ namespace Gamekit3D
 {
     public class HumanoidWeaponController : MonoBehaviour
     {
-
-        /// <Summary>
-        /// アニメーションのパラメータの打ち間違いを防ぐため、変数に格納してSetTriggerに渡します
-        /// </Summary>
-        private static readonly int AnimationRepelledHash = Animator.StringToHash("Repelled");
 
         /// <Summary>
         /// この変数の中の値を変更することでこの武器を持つ敵の対応したアニメーションが再生されます
@@ -22,17 +18,25 @@ namespace Gamekit3D
         /// </Summary>
         [SerializeField] private BoxCollider _boxCollider;
 
+        /// <Summary>
+        /// attack point of the enemy weapon
+        /// </Summary>
+        [SerializeField] private int attackPoint = 1;
+
+        private Vector3 _direction;
+        private bool _isThrowingHit = false;
+
         private void Start()
         {
             //攻撃モーションが始まるまでは当たり判定を無効化します
-            DisableAttack();
+            DisableWeapon();
         }
 
         /// <Summary>
         /// 武器のColliderを有効にします。
         /// 色々なシチュエーションで使えるように他のスクリプトから呼び出せるようにpublicにします。
         /// </Summary>
-        public void EnableAttack()
+        public void EnableWeapon()
         {
             _boxCollider.enabled = true;
         }
@@ -41,25 +45,44 @@ namespace Gamekit3D
         /// 武器のColliderを無効にします。
         /// 色々なシチュエーションで使えるように他のスクリプトから呼び出せるようにpublicにします。
         /// </Summary>
-        public void DisableAttack()
+        public void DisableWeapon()
         {
             _boxCollider.enabled = false;
         }
-
-        /// <Summary>
-        /// プレイヤーの武器が敵の武器に設定したColliderに触れると敵がのけぞるアニメーションをオンにします
-        /// </Summary>
+        
+        // 外部から_animatorを取得できる処理を追加
+        public Animator GetHumanoidAnimator()
+        {
+            return _animator;
+        }
+        
         private void OnTriggerEnter(Collider other)
         {
-            //当たったのがプレイヤーの武器かどうかを判定します
-            if (other.gameObject.TryGetComponent<PlayerWeaponController>(out PlayerWeaponController _playerWeaponControllerIdentification))
-            {
-                //敵の攻撃が当たったことを示すパラメーターをオンにします
-                //Triggerの場合は自動でオフになるため、Boolのようにfalseにする処理は必要ありません
-                _animator.SetTrigger(AnimationRepelledHash);
+            Debug.Log($"HumanoidWeaponController:OnCollisionEnter:collision.gameObject.name {other.gameObject.name}");
 
-                //敵の攻撃が当たり終わったので、武器の当たり判定をオフにします
-                DisableAttack();
+            // if not collision to player, end method
+            if (other.gameObject.GetComponentInChildren<PlayerController>() == null)
+            {
+                return;
+            }
+            // if collision to player, apply damage
+            else if (other.gameObject.GetComponentInChildren<PlayerController>().TryGetComponent<PlayerController>(out PlayerController _playerControllerIdentification))
+            {
+                //select damage target
+                Damageable d = other.gameObject.GetComponentInChildren<Damageable>();
+
+                //与えるダメージの量や方向などを格納します
+                Damageable.DamageMessage data;
+
+                data.amount = attackPoint;
+                data.damager = this;
+                data.direction = _direction.normalized;
+                data.damageSource = this.transform.position;
+                data.throwing = _isThrowingHit;
+                data.stopCamera = false;
+
+                //ダメージを与えます
+                d.ApplyDamage(data);
             }
         }
     }
