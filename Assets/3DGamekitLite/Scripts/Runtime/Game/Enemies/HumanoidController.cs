@@ -15,7 +15,6 @@ namespace Gamekit3D
         /// <Summary>
         /// どの音を再生するかを設定します
         /// </Summary>
-        [SerializeField] private AudioClip _se_attack_hit;
         [SerializeField] private AudioClip _se_death;
 
         //音を再生するためのコンポーネントの情報を格納する変数です
@@ -25,12 +24,6 @@ namespace Gamekit3D
         /// この変数に対してUnityの画面上でプレイヤーを設定することで、敵がプレイヤーに向かいます
         /// </Summary>
         [SerializeField] private Transform _target;
-
-        /// <Summary>
-        /// 敵のヒットポイントが0以下になることで敵が倒れてリスポーンします
-        /// 敵のヒットポイントを半減させる処理などを想定して小数点を扱える型にします
-        /// </Summary>
-        [SerializeField] private float _enemyHitPoint;
 
         /// <Summary>
         /// この変数に対してターゲットとしてプレイヤーを指定することで敵がプレイヤーに向かいます
@@ -48,16 +41,6 @@ namespace Gamekit3D
         [SerializeField] public Animator animator;
 
         /// <Summary>
-        /// スローの速さを調整します
-        /// </Summary>
-        [SerializeField] private float _timeScale;
-
-        /// <Summary>
-        /// この変数を実行することでエフェクトが実行されます
-        /// </Summary>
-        [SerializeField] private ParticleSystem _particleSystem;
-        
-        /// <Summary>
         /// 左右移動の速さを調整します
         /// </Summary>
         [SerializeField] private int leftRightMoveSpeed;
@@ -69,11 +52,8 @@ namespace Gamekit3D
 
         //文字列をハッシュという数字に予め変換しておくことで、処理の度に文字列化を行ないでよいようにして負荷を軽減します
         //また、文字列の打ち間違いをしないようにします
-        private static readonly int AnimationGotHitHash = Animator.StringToHash("GotHit");
         private static readonly int AnimationMovingHash = Animator.StringToHash("Moving");
         private static readonly int AnimationBattleRandomHash = Animator.StringToHash("BattleRandom");
-        
-        private static readonly int AnimationDeadHash = Animator.StringToHash("Dead");
 
 
         /// <Summary>
@@ -97,71 +77,6 @@ namespace Gamekit3D
         private const float MovingWaitSec = 3f;
         private float _movingWaitTimer = 0f;
         private Vector3 _rotateAxis = Vector3.zero;
-
-        /// <Summary>
-        /// 敵にダメージを与えてヒットポイントを減らします
-        /// 将来的にステータス異常などプレイヤーの武器以外からのダメージを想定してパブリックにします
-        /// </Summary>
-        public float Damage(float inputEnemyHitPoint)
-        {
-            
-            inputEnemyHitPoint--;
-            return inputEnemyHitPoint;
-        }
-
-
-        /// <Summary>
-        /// プレイヤーの武器が敵本体に設定したColliderに触れると実行される処理を書きます
-        /// </Summary>
-        private void OnTriggerEnter(Collider other)
-        {
-            //当たったのがプレイヤーの武器かどうかを判定します
-            if (other.gameObject.TryGetComponent<PlayerWeaponController>(out PlayerWeaponController _playerWeaponControllerIdentification))
-            {
-                Debug.Log($"HumanoidController:OnTriggerEnter:AttackHit");
-                
-                //敵に攻撃がヒットした音を鳴らします
-                _audioSource.PlayOneShot(_se_attack_hit);
-
-                //敵のヒットポイントを減らします
-                _enemyHitPoint = Damage(_enemyHitPoint);
-
-                //敵のヒットポイントが無くなったら倒れてリスポーンします
-                if (_enemyHitPoint <= 0)
-                {
-                    //時間を一定時間遅くした後にもとに戻します
-                    StartCoroutine(DelayCoroutine());
-
-                    //ショックウェーブを発生させます
-                    _particleSystem.Play();
-
-                    //敵が倒れるモーションを再生します
-                    animator.SetTrigger(AnimationDeadHash);
-
-                    //倒れるモーションを待ってから敵を消滅させます
-                    Destroy(gameObject, _timeEnemyDead);
-                }
-
-                //敵の攻撃が当たったことを示すパラメーターをオンにします
-                animator.SetTrigger(AnimationGotHitHash);
-
-            }
-        }
-
-        /// <Summary>
-        /// 敵を倒した際にスローにしてから戻します
-        /// </Summary>
-        private IEnumerator DelayCoroutine()
-        {
-            //時間の流れを遅くします
-            Time.timeScale = _timeScale;
-
-            // 敵が倒れるまで待ちます
-            yield return new WaitForSecondsRealtime(_delayTime);
-
-            //時間の流れを戻します
-            Time.timeScale = 1.0f;
-        }
 
         /// <Summary>
         /// 敵が倒れたときにアニメーションから呼び出される処理を定義します
