@@ -36,6 +36,11 @@ namespace Gamekit3D
         [SerializeField] private float noticeDistance = 10.0f;
 
         /// <Summary>
+        /// Distance start to battle.
+        /// </Summary>
+        [SerializeField] private float battleDistance;
+
+        /// <Summary>
         /// この変数の中の値を変更することで対応したアニメーションが再生されます
         /// </Summary>
         [SerializeField] public Animator animator;
@@ -124,7 +129,7 @@ namespace Gamekit3D
             }
 
             //プレイヤーと敵の距離がNavMeshAgentで設定している停止距離より少し近くなったら敵が攻撃を開始します
-            if (Vector3.Distance(_target.position, _navMeshAgent.transform.position) < _navMeshAgent.stoppingDistance + 0.5f)
+            if (Vector3.Distance(_target.position, _navMeshAgent.transform.position) < _navMeshAgent.stoppingDistance + battleDistance)
             {
                 //プレイヤーの位置から自分の位置を引くことで、敵から見たプレイヤーの位置を算出します（★原理がよくわかっていない） https://gomafrontier.com/unity/2883
                 //y軸を固定することで敵が上を向かないようにします
@@ -139,8 +144,8 @@ namespace Gamekit3D
                 var currentClipName = animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
                 var battleRandomValue = animator.GetInteger(AnimationBattleRandomHash);
 
-                // 移動モーション中かどうかを判定します
-                if (currentClipName == "WalkForward")
+                // Verify enemy is walking or idling.
+                if (currentClipName == "WalkForward" || currentClipName == "Idle" )
                 {
                     //左右に移動中かを判定します
                     if (IsLeftRightMoving())
