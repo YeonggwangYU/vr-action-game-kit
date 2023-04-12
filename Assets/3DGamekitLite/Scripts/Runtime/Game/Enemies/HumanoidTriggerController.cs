@@ -63,11 +63,6 @@ namespace Gamekit3D
         private int _attackPattern;
         
         /// <Summary>
-        /// 敵の戦闘時の左右移動のための変数です
-        /// </Summary>
-        private float _movingWaitTimer = 0f;
-
-        /// <Summary>
         /// 敵にダメージを与えてヒットポイントを減らします
         /// 将来的にステータス異常などプレイヤーの武器以外からのダメージを想定してパブリックにします
         /// </Summary>
