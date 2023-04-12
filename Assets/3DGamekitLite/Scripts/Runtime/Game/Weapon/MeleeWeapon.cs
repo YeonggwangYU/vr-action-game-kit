@@ -256,8 +256,6 @@ namespace Gamekit3D
             //攻撃がヒットした際のパーティクルを発生させます
             if (hitParticlePrefab != null)
             {
-                Debug.Log($"MeleeWeapon:CheckDamage:particle ON");
-                
                 m_ParticlesPool[m_CurrentParticle].transform.position = pts.attackRoot.transform.position;
                 m_ParticlesPool[m_CurrentParticle].time = 0;
                 m_ParticlesPool[m_CurrentParticle].Play();
