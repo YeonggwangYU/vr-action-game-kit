@@ -220,6 +220,14 @@ namespace Gamekit3D
                 return false;
             }
 
+            //When hit to guard collider, don't enable particle.
+            if (other.gameObject.TryGetComponent<GuardLeftCollider>(out GuardLeftCollider guardLeftCollider) ||
+                other.gameObject.TryGetComponent<GuardRightCollider>(out GuardRightCollider guardRightCollider) ||
+                other.gameObject.TryGetComponent<GuardUpperCollider>(out GuardUpperCollider guardUpperCollider))
+            {
+                return false;
+            }
+
             //攻撃を当てた際に音を発生させます
             if (hitAudio != null)
             {
