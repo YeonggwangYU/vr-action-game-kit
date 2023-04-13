@@ -127,7 +127,7 @@ namespace Gamekit3D
             {
                 animator.SetBool(AnimationMovingHash, false);
             }
-
+            
             //プレイヤーと敵の距離がNavMeshAgentで設定している停止距離より少し近くなったら敵が攻撃を開始します
             if (Vector3.Distance(_target.position, _navMeshAgent.transform.position) < _navMeshAgent.stoppingDistance + battleDistance)
             {
