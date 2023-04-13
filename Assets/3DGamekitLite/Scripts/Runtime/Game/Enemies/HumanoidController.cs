@@ -164,13 +164,22 @@ namespace Gamekit3D
                     else
                     {
                         //ランダムに攻撃パターンを発生させます
-                        _attackPattern = Random.Range(1, 6);
+                        _attackPattern = Random.Range(1, 9);
                         Debug.Log($"attackPattern:{_attackPattern}");
                         switch (_attackPattern)
                         {
                             case 1:
                             case 2:
                             case 3:
+                            //to increase attack frequency, add number.
+                            case 6:
+                            case 7:
+                            case 8:
+                                //set number equal to attackPattern.
+                                if (_attackPattern > 5)
+                                {
+                                    _attackPattern =- 5;
+                                }
                                 //ランダムに攻撃を行います
                                 animator.SetInteger(AnimationBattleRandomHash, _attackPattern);
                                 break;
