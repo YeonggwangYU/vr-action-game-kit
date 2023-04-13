@@ -160,7 +160,7 @@ namespace Gamekit3D
             //set knockback velocity
             _knockbackVelocity = (-transform.forward * knockbackFrame);
 
-            // 敵が倒れるまで待ちます
+            //wait for knockback time.
             yield return new WaitForSecondsRealtime(knockbackSeconds);
 
             //clear knockback velocity
