@@ -70,6 +70,11 @@ namespace Gamekit3D
         private bool isAttackEnable = false;
         
         /// <Summary>
+        /// check attack is disabled by enemy guard.
+        /// </Summary>
+        private bool isAttackDisabledByEnemyGuard = false;
+        
+        /// <Summary>
         /// アニメーションのパラメータの打ち間違いを防ぐため、変数に格納してSetTriggerに渡します
         /// </Summary>
         private static readonly int AnimationRepelledHash = Animator.StringToHash("Repelled");
@@ -234,9 +239,6 @@ namespace Gamekit3D
             //当たったのが敵かどうかを判定します
             else if (other.gameObject.TryGetComponent<HumanoidController>(out HumanoidController _humanoidControllerIdentification))
             {
-                //Enable attack collider and particle.
-                EnableAttack();
-                
                 Debug.Log($"PlayerWeaponController:OnTriggerEnter:_inputDevice:{_inputDevice.name}");
                 
                 //コントローラーを振動させます。3つ目の引数が振動させる時間です
@@ -244,33 +246,23 @@ namespace Gamekit3D
             }
         }
 
-        private void OnTriggerExit(Collider other)
-        {
-            //当たったのが敵かどうかを判定します
-            if (other.gameObject.TryGetComponent<HumanoidController>(out HumanoidController _humanoidControllerIdentification))
-            {
-                //Disable attack collider and particle.
-                DisableAttack();
-            }
-        }
-        
         /// <Summary>
         /// Enable player weopon after (parameter) seconds
         /// </Summary>
         private IEnumerator DisableAttackCoroutine()
         {
             // Disable hit damage.
-            DisableAttack();
+            isAttackDisabledByEnemyGuard = true;
             
-            Debug.Log($"PlayerWeaponController:OnTriggerEnter:DisableAttack");
+            Debug.Log($"PlayerWeaponController:OnTriggerEnter:isAttackDisabledByEnemyGuard = true");
             
             // wait (parameter) second
             yield return new WaitForSecondsRealtime(attackEnableTime);
 
             // Enable hit damage.
-            EnableAttack();
+            isAttackDisabledByEnemyGuard = false;
             
-            Debug.Log($"PlayerWeaponController:OnTriggerEnter:EnableAttack");
+            Debug.Log($"PlayerWeaponController:OnTriggerEnter:isAttackDisabledByEnemyGuard = false");
 
         }
 
@@ -294,6 +286,11 @@ namespace Gamekit3D
                 print($"velocity.magnitude = {velocity.magnitude}");
                 if (!isAttackEnable)
                 {
+                    if (isAttackDisabledByEnemyGuard)
+                    {
+                        return;
+                    }
+                    
                     EnableAttack();
                 }
             }
