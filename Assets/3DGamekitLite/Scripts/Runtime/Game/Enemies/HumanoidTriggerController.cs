@@ -100,7 +100,7 @@ namespace Gamekit3D
         private void OnTriggerEnter(Collider other)
         {
             //当たったのがプレイヤーの武器かどうかを判定します
-            if (other.gameObject.TryGetComponent<PlayerWeaponController>(out PlayerWeaponController _playerWeaponControllerIdentification))
+            if (other.gameObject.TryGetComponent<PlayerWeaponAttackController>(out PlayerWeaponAttackController _playerWeaponAttackControllerControllerIdentification))
             {
                 Debug.Log($"HumanoidController:OnTriggerEnter:AttackHit");
                 

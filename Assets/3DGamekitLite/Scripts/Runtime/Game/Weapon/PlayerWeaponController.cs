@@ -26,9 +26,14 @@ namespace Gamekit3D
         [SerializeField] private ParticleSystem weaponParticleSystem;
 
         /// <Summary>
-        /// Colliderの操作を行うための変数です
+        /// Collider for make enemy guard and guard enemy attack.
         /// </Summary>
         [SerializeField] private Collider weaponCollider;
+
+        /// <Summary>
+        /// Collider for attack.
+        /// </Summary>
+        [SerializeField] private Collider weaponAttackCollider;
 
         /// <Summary>
         /// Use to get speed of player weapon.
@@ -43,12 +48,12 @@ namespace Gamekit3D
         /// <Summary>
         /// time until enable player weapon when guarded with enemy weapon
         /// </Summary>
-        [SerializeField] private float playerWeaponEnableTime;
+        [SerializeField] private float attackEnableTime;
 
         /// <Summary>
         /// speed that enable weapon attack.
         /// </Summary>
-        [SerializeField] private float playerWeaponEnableSpeed;
+        [SerializeField] private float attackEnableSpeed;
 
         //コントローラーを振動させる際に使用する変数です
         private InputDevice _inputDevice;
@@ -57,6 +62,12 @@ namespace Gamekit3D
         /// posititon before 1 frame.
         /// </Summary>
         private Vector3 _prevPosition;
+
+        
+        /// <Summary>
+        /// check attack is enable.
+        /// </Summary>
+        private bool isAttackEnable = false;
         
         /// <Summary>
         /// アニメーションのパラメータの打ち間違いを防ぐため、変数に格納してSetTriggerに渡します
@@ -76,14 +87,16 @@ namespace Gamekit3D
         private void EnableIsTrigger()
         {
             weaponCollider.isTrigger = true;
+            weaponAttackCollider.isTrigger = true;
         }
 
         /// <Summary>
-        /// isTriggerを解除することで落としても地面に乗るようにします
+        /// isTriggerを解除することで落としても地面に乗るようにします.
         /// </Summary>
         private void DisableIsTrigger()
         {
             weaponCollider.isTrigger = false;
+            weaponAttackCollider.isTrigger = false;
         }
 
         /// <Summary>
@@ -91,7 +104,10 @@ namespace Gamekit3D
         /// </Summary>
         private void EnableAttack()
         {
-            weaponCollider.enabled = true;
+            isAttackEnable = true;
+            
+            weaponAttackCollider.enabled = true;
+            meleeWeapon.BeginAttack(true);
         }
 
         /// <Summary>
@@ -99,7 +115,10 @@ namespace Gamekit3D
         /// </Summary>
         private void DisableAttack()
         {
-            weaponCollider.enabled = false;
+            isAttackEnable = false;
+
+            weaponAttackCollider.enabled = false;
+            meleeWeapon.EndAttack();
         }
 
         /// <Summary>
@@ -215,13 +234,13 @@ namespace Gamekit3D
             //当たったのが敵かどうかを判定します
             else if (other.gameObject.TryGetComponent<HumanoidController>(out HumanoidController _humanoidControllerIdentification))
             {
+                //Enable attack collider and particle.
+                EnableAttack();
+                
                 Debug.Log($"PlayerWeaponController:OnTriggerEnter:_inputDevice:{_inputDevice.name}");
                 
                 //コントローラーを振動させます。3つ目の引数が振動させる時間です
                 _inputDevice.SendHapticImpulse(0, 0.5f, 0.1f);
-
-                // Disable hit effect.
-                meleeWeapon.EndAttack();
             }
         }
 
@@ -230,8 +249,8 @@ namespace Gamekit3D
             //当たったのが敵かどうかを判定します
             if (other.gameObject.TryGetComponent<HumanoidController>(out HumanoidController _humanoidControllerIdentification))
             {
-                // Enable hit effect
-                meleeWeapon.BeginAttack(true);
+                //Disable attack collider and particle.
+                DisableAttack();
             }
         }
         
@@ -242,18 +261,14 @@ namespace Gamekit3D
         {
             // Disable hit damage.
             DisableAttack();
-            // Disable hit effect.
-            meleeWeapon.EndAttack();
             
             Debug.Log($"PlayerWeaponController:OnTriggerEnter:DisableAttack");
             
             // wait (parameter) second
-            yield return new WaitForSecondsRealtime(playerWeaponEnableTime);
+            yield return new WaitForSecondsRealtime(attackEnableTime);
 
             // Enable hit damage.
             EnableAttack();
-            // Enable hit effect.
-            meleeWeapon.BeginAttack(true);
             
             Debug.Log($"PlayerWeaponController:OnTriggerEnter:EnableAttack");
 
@@ -274,9 +289,20 @@ namespace Gamekit3D
             // calcurate current speed.
             Vector3 velocity = (position - _prevPosition) / Time.deltaTime;
 
-            if (velocity.magnitude > playerWeaponEnableSpeed)
+            if (velocity.magnitude > attackEnableSpeed)
             {
                 print($"velocity.magnitude = {velocity.magnitude}");
+                if (!isAttackEnable)
+                {
+                    EnableAttack();
+                }
+            }
+            else if((velocity.magnitude <= attackEnableSpeed))
+            {
+                if (isAttackEnable)
+                {
+                    DisableAttack();
+                }
             }
             
             // update previous frame position.
