@@ -41,6 +41,11 @@ namespace Gamekit3D
         [SerializeField] private Rigidbody rigidbody;
 
         /// <Summary>
+        /// Use to display weapon locus.
+        /// </Summary>
+        [SerializeField] private TrailRenderer trailRenderer;
+
+        /// <Summary>
         /// 武器の当たり判定の有効/無効を切り替えるための変数です
         /// </Summary>
         [SerializeField] private MeleeWeapon meleeWeapon;
@@ -54,6 +59,11 @@ namespace Gamekit3D
         /// speed that enable weapon attack.
         /// </Summary>
         [SerializeField] private float attackEnableSpeed;
+
+        /// <Summary>
+        /// speed that enable weapon attack.
+        /// </Summary>
+        [SerializeField] private float disableTrailRendererTime;
 
         //コントローラーを振動させる際に使用する変数です
         private InputDevice _inputDevice;
@@ -113,6 +123,7 @@ namespace Gamekit3D
             
             weaponAttackCollider.enabled = true;
             meleeWeapon.BeginAttack(true);
+            trailRenderer.enabled = true;
         }
 
         /// <Summary>
@@ -124,6 +135,19 @@ namespace Gamekit3D
 
             weaponAttackCollider.enabled = false;
             meleeWeapon.EndAttack();
+            StartCoroutine(DisableTrailRendererCoroutine());
+        }
+
+        /// <Summary>
+        /// Enable player weopon after (parameter) seconds
+        /// </Summary>
+        private IEnumerator DisableTrailRendererCoroutine()
+        {
+            // wait (parameter) second
+            yield return new WaitForSecondsRealtime(disableTrailRendererTime);
+
+            // Enable hit damage.
+            trailRenderer.enabled = false;
         }
 
         /// <Summary>
