@@ -1,9 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
+using Vector3 = UnityEngine.Vector3;
 
 namespace Gamekit3D
 {
@@ -28,6 +31,11 @@ namespace Gamekit3D
         [SerializeField] private Collider weaponCollider;
 
         /// <Summary>
+        /// Use to get speed of player weapon.
+        /// </Summary>
+        [SerializeField] private Rigidbody rigidbody;
+
+        /// <Summary>
         /// 武器の当たり判定の有効/無効を切り替えるための変数です
         /// </Summary>
         [SerializeField] private MeleeWeapon meleeWeapon;
@@ -37,15 +45,31 @@ namespace Gamekit3D
         /// </Summary>
         [SerializeField] private float playerWeaponEnableTime;
 
+        /// <Summary>
+        /// speed that enable weapon attack.
+        /// </Summary>
+        [SerializeField] private float playerWeaponEnableSpeed;
+
         //コントローラーを振動させる際に使用する変数です
         private InputDevice _inputDevice;
-
+        
+        /// <Summary>
+        /// posititon before 1 frame.
+        /// </Summary>
+        private Vector3 _prevPosition;
+        
         /// <Summary>
         /// アニメーションのパラメータの打ち間違いを防ぐため、変数に格納してSetTriggerに渡します
         /// </Summary>
         private static readonly int AnimationRepelledHash = Animator.StringToHash("Repelled");
 
 
+        private void Start()
+        {
+            // hold first position.
+            _prevPosition = transform.position;
+        }
+        
         /// <Summary>
         /// isTriggerを設定することで武器を持ったときにプレイヤーが勝手に移動しないようにし、移動したときに武器がブレないようにします
         /// </Summary>
@@ -159,13 +183,7 @@ namespace Gamekit3D
                     {
                         OnHitEnemyWeapon();
 
-                        // Disable hit damage.
-                        DisableAttack();
-                        // Disable hit effect.
-                        meleeWeapon.EndAttack();
-
-                        Debug.Log($"PlayerWeaponController:OnTriggerEnter:DisableAttack");
-                        StartCoroutine(DelayCoroutine());
+                        StartCoroutine(DisableAttackCoroutine());
                     }
                     else
                     {
@@ -220,8 +238,15 @@ namespace Gamekit3D
         /// <Summary>
         /// Enable player weopon after (parameter) seconds
         /// </Summary>
-        private IEnumerator DelayCoroutine()
+        private IEnumerator DisableAttackCoroutine()
         {
+            // Disable hit damage.
+            DisableAttack();
+            // Disable hit effect.
+            meleeWeapon.EndAttack();
+            
+            Debug.Log($"PlayerWeaponController:OnTriggerEnter:DisableAttack");
+            
             // wait (parameter) second
             yield return new WaitForSecondsRealtime(playerWeaponEnableTime);
 
@@ -234,5 +259,28 @@ namespace Gamekit3D
 
         }
 
+        /// <Summary>
+        /// Enable player weapon attack when swing weapon fast.
+        /// </Summary>
+        private void Update()
+        {
+            // do nothing whilde deltaTime is 0.
+            if (Mathf.Approximately(Time.deltaTime, 0))
+                return;
+
+            // get current position.
+            Vector3 position = transform.position;
+
+            // calcurate current speed.
+            Vector3 velocity = (position - _prevPosition) / Time.deltaTime;
+
+            if (velocity.magnitude > playerWeaponEnableSpeed)
+            {
+                print($"velocity.magnitude = {velocity.magnitude}");
+            }
+            
+            // update previous frame position.
+            _prevPosition = position;
+        }
     }
 }
