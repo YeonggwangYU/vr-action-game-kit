@@ -6,3 +6,8 @@ OSS の VR ゲーム「VR 元カノ監獄」のリポジトリです。以下は
 https://docs.google.com/presentation/d/1oNTrDcwSCEkPdT25EP4Mh70X0a1a68cz/edit?usp=sharing&ouid=100204303293552028007&rtpof=true&sd=true
 
 # License
+
+## Fonts
+
+Noto Sans Japanese
+https://fonts.google.com/noto/specimen/Noto+Sans+JP?subset=japanese&noto.script=Jpan
