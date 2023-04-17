@@ -83,6 +83,12 @@ namespace Gamekit3D
         /// check attack is disabled by enemy guard.
         /// </Summary>
         private bool isAttackDisabledByEnemyGuard = false;
+
+        /// <Summary>
+        /// check weapon is grabbed.
+        /// </Summary>
+        private bool isGrabbed = false;
+
         
         /// <Summary>
         /// アニメーションのパラメータの打ち間違いを防ぐため、変数に格納してSetTriggerに渡します
@@ -97,21 +103,25 @@ namespace Gamekit3D
         }
         
         /// <Summary>
-        /// isTriggerを設定することで武器を持ったときにプレイヤーが勝手に移動しないようにし、移動したときに武器がブレないようにします
+        /// Set isTrigger to prevent the player from moving on his own when holding the weapon, and to prevent the weapon from shaking when he moves.
+        /// Also set isGrabbed true and enable swing sound and particle.
         /// </Summary>
-        private void EnableIsTrigger()
+        private void OnGrabbed()
         {
             weaponCollider.isTrigger = true;
             weaponAttackCollider.isTrigger = true;
+            isGrabbed = true;
         }
 
         /// <Summary>
-        /// isTriggerを解除することで落としても地面に乗るようにします.
+        /// Disable isTrigger so that the weapon rides on the ground even if it is dropped.
+        /// Also set isGrabbed false and disable swing sound and particle.
         /// </Summary>
-        private void DisableIsTrigger()
+        private void OnReleased()
         {
             weaponCollider.isTrigger = false;
             weaponAttackCollider.isTrigger = false;
+            isGrabbed = false;
         }
 
         /// <Summary>
@@ -155,7 +165,7 @@ namespace Gamekit3D
         /// </Summary>
         public void OnSelectEnteredLeftHand()
         {
-            EnableIsTrigger();
+            OnGrabbed();
             _inputDevice = InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
             
             Debug.Log($"PlayerWeaponController:OnSelectEnteredLeftHand:_inputDevice:{_inputDevice.name}");
@@ -167,7 +177,7 @@ namespace Gamekit3D
         /// </Summary>
         public void OnSelectEnteredRightHand()
         {
-            EnableIsTrigger();
+            OnGrabbed();
             _inputDevice = InputDevices.GetDeviceAtXRNode(XRNode.RightHand);
         }
 
@@ -176,7 +186,7 @@ namespace Gamekit3D
         /// </Summary>
         public void OnSelectExited()
         {
-            DisableIsTrigger();
+            OnReleased();
 
             //LeftEyeがXRNode変数の初期値なので初期値に戻します
             _inputDevice = InputDevices.GetDeviceAtXRNode(XRNode.LeftEye);
@@ -295,9 +305,16 @@ namespace Gamekit3D
         /// </Summary>
         private void Update()
         {
+            if (!isGrabbed)
+            {
+                return;
+            }
+            
             // do nothing whilde deltaTime is 0.
             if (Mathf.Approximately(Time.deltaTime, 0))
+            {
                 return;
+            }
 
             // get current position.
             Vector3 position = transform.position;
