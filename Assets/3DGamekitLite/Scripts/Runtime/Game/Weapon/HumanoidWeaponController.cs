@@ -58,8 +58,6 @@ namespace Gamekit3D
         
         private void OnTriggerEnter(Collider other)
         {
-            Debug.Log($"HumanoidWeaponController:OnCollisionEnter:collision.gameObject.name {other.gameObject.name}");
-
             // if not collision to player, end method
             if (other.gameObject.GetComponentInChildren<PlayerController>() == null)
             {

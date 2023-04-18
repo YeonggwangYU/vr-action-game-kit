@@ -96,6 +96,9 @@ namespace Gamekit3D
         private static readonly int AnimationRepelledHash = Animator.StringToHash("Repelled");
 
 
+        private bool hapticResult = false;
+
+        
         private void Start()
         {
             // hold first position.
@@ -167,9 +170,6 @@ namespace Gamekit3D
         {
             OnGrabbed();
             _inputDevice = InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
-            
-            Debug.Log($"PlayerWeaponController:OnSelectEnteredLeftHand:_inputDevice:{_inputDevice.name}");
-            
         }
 
         /// <Summary>
@@ -271,12 +271,13 @@ namespace Gamekit3D
                 guardUpperCollider.SetTriggerGuard(gameObject);
             }
             //当たったのが敵かどうかを判定します
-            else if (other.gameObject.TryGetComponent<HumanoidController>(out HumanoidController _humanoidControllerIdentification))
+            else if (other.gameObject.TryGetComponent<HumanoidTriggerController>(out HumanoidTriggerController humanoidTriggerControllerIdentification))
             {
-                Debug.Log($"PlayerWeaponController:OnTriggerEnter:_inputDevice:{_inputDevice.name}");
-                
-                //コントローラーを振動させます。3つ目の引数が振動させる時間です
-                _inputDevice.SendHapticImpulse(0, 0.5f, 0.1f);
+                if (isAttackEnable)
+                {
+                    //コントローラーを振動させます。3つ目の引数が振動させる時間です
+                    hapticResult = _inputDevice.SendHapticImpulse(0, 0.5f, 0.1f);
+                }
             }
         }
 
@@ -324,7 +325,6 @@ namespace Gamekit3D
 
             if (velocity.magnitude > attackEnableSpeed)
             {
-                print($"velocity.magnitude = {velocity.magnitude}");
                 if (!isAttackEnable)
                 {
                     if (isAttackDisabledByEnemyGuard)
