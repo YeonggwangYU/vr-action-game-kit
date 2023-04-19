@@ -66,21 +66,42 @@ namespace Gamekit3D
             // if collision to player, apply damage
             else if (other.gameObject.GetComponentInChildren<PlayerController>().TryGetComponent<PlayerController>(out PlayerController _playerControllerIdentification))
             {
-                //select damage target
-                Damageable d = other.gameObject.GetComponentInChildren<Damageable>();
+                // check enemy is playing animation
+                if (_animator.GetCurrentAnimatorStateInfo(0).length != 0)
+                {
+                    string currentClipName = _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name;
 
-                //与えるダメージの量や方向などを格納します
-                Damageable.DamageMessage data;
+                    // if Enemy is attacking, play enemy's Repell animation
+                    if ((currentClipName == "AttackFromLeft") || (currentClipName == "AttackFromRight") ||
+                        (currentClipName == "AttackFromUpper"))
+                    {
+                        //select damage target
+                        Damageable d = other.gameObject.GetComponentInChildren<Damageable>();
 
-                data.amount = attackPoint;
-                data.damager = this;
-                data.direction = _direction.normalized;
-                data.damageSource = this.transform.position;
-                data.throwing = _isThrowingHit;
-                data.stopCamera = false;
+                        //与えるダメージの量や方向などを格納します
+                        Damageable.DamageMessage data;
 
-                //ダメージを与えます
-                d.ApplyDamage(data);
+                        data.amount = attackPoint;
+                        data.damager = this;
+                        data.direction = _direction.normalized;
+                        data.damageSource = this.transform.position;
+                        data.throwing = _isThrowingHit;
+                        data.stopCamera = false;
+
+                        //ダメージを与えます
+                        d.ApplyDamage(data);
+                    }
+                    // if Enemy is guarding,  disable player weopon (parameter) seconds 
+                    else if ((currentClipName == "GuardLeft") || (currentClipName == "GuardRight") ||
+                             (currentClipName == "GuardUpper"))
+                    {
+                        // nothing to do
+                    }
+                    else
+                    {
+                        // nothing to do
+                    }
+                }
             }
         }
     }
