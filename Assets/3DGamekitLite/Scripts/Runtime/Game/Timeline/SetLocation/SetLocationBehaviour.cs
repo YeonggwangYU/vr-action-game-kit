@@ -1,11 +1,13 @@
 using System;
 using UnityEngine;
 using UnityEngine.Playables;
-using UnityEngine.Timeline;
 
-[Serializable]
-public class SetLocationBehaviour : PlayableBehaviour
+namespace _3DGamekitLite.Scripts.Runtime.Game.Timeline.SetLocation
 {
-    public Vector3 position;
-    public Vector3 eulerAngles;
+    [Serializable]
+    public class SetLocationBehaviour : PlayableBehaviour
+    {
+        public Vector3 position;
+        public Vector3 eulerAngles;
+    }
 }

@@ -1,6 +1,7 @@
+using _3DGamekitLite.Scripts.Runtime.Interactive.Platforms.Runtime;
 using UnityEngine;
 
-namespace Gamekit3D.GameCommands
+namespace _3DGamekitLite.Scripts.Runtime.Interactive.Actions
 {
     public abstract class SimpleTransformer : GameCommandHandler
     {

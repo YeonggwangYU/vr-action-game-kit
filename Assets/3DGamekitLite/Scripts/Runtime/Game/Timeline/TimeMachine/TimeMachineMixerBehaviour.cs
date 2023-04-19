@@ -1,61 +1,62 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
-using UnityEngine.Timeline;
 
-public class TimeMachineMixerBehaviour : PlayableBehaviour
+namespace _3DGamekitLite.Scripts.Runtime.Game.Timeline.TimeMachine
 {
-	public Dictionary<string, double> markerClips;
+	public class TimeMachineMixerBehaviour : PlayableBehaviour
+	{
+		public Dictionary<string, double> markerClips;
 
-    public override void ProcessFrame(Playable playable, FrameData info, object playerData)
-    {
-		//ScriptPlayable<TimeMachineBehaviour> inputPlayable = (ScriptPlayable<TimeMachineBehaviour>)playable.GetInput(i);
-		//Debug.Log(PlayableExtensions.GetTime<ScriptPlayable<TimeMachineBehaviour>>(inputPlayable));
-
-		if(!Application.isPlaying)
+		public override void ProcessFrame(Playable playable, FrameData info, object playerData)
 		{
-			return;
-		}
+			//ScriptPlayable<TimeMachineBehaviour> inputPlayable = (ScriptPlayable<TimeMachineBehaviour>)playable.GetInput(i);
+			//Debug.Log(PlayableExtensions.GetTime<ScriptPlayable<TimeMachineBehaviour>>(inputPlayable));
 
-        int inputCount = playable.GetInputCount();
-
-        for (int i = 0; i < inputCount; i++)
-        {
-            float inputWeight = playable.GetInputWeight(i);
-            ScriptPlayable<TimeMachineBehaviour> inputPlayable = (ScriptPlayable<TimeMachineBehaviour>)playable.GetInput(i);
-            TimeMachineBehaviour input = inputPlayable.GetBehaviour();
-            
-			if(inputWeight > 0f)
+			if(!Application.isPlaying)
 			{
-				switch(input.action)
-				{
-					case TimeMachineBehaviour.TimeMachineAction.Pause:
-						Debug.Log("Pause");
-						(playable.GetGraph().GetResolver() as PlayableDirector).Pause();
-						break;
+				return;
+			}
 
-					case TimeMachineBehaviour.TimeMachineAction.JumpToTime:
-					case TimeMachineBehaviour.TimeMachineAction.JumpToMarker:
-						if(input.ConditionMet())
-						{
-							//Rewind
-							if(input.action == TimeMachineBehaviour.TimeMachineAction.JumpToTime)
+			int inputCount = playable.GetInputCount();
+
+			for (int i = 0; i < inputCount; i++)
+			{
+				float inputWeight = playable.GetInputWeight(i);
+				ScriptPlayable<TimeMachineBehaviour> inputPlayable = (ScriptPlayable<TimeMachineBehaviour>)playable.GetInput(i);
+				TimeMachineBehaviour input = inputPlayable.GetBehaviour();
+            
+				if(inputWeight > 0f)
+				{
+					switch(input.action)
+					{
+						case TimeMachineBehaviour.TimeMachineAction.Pause:
+							Debug.Log("Pause");
+							(playable.GetGraph().GetResolver() as PlayableDirector).Pause();
+							break;
+
+						case TimeMachineBehaviour.TimeMachineAction.JumpToTime:
+						case TimeMachineBehaviour.TimeMachineAction.JumpToMarker:
+							if(input.ConditionMet())
 							{
-								//Jump to time
-								(playable.GetGraph().GetResolver() as PlayableDirector).time = (double)input.timeToJumpTo;
+								//Rewind
+								if(input.action == TimeMachineBehaviour.TimeMachineAction.JumpToTime)
+								{
+									//Jump to time
+									(playable.GetGraph().GetResolver() as PlayableDirector).time = (double)input.timeToJumpTo;
+								}
+								else
+								{
+									//Jump to marker
+									double t = markerClips[input.markerToJumpTo];
+									(playable.GetGraph().GetResolver() as PlayableDirector).time = t;
+								}
 							}
-							else
-							{
-								//Jump to marker
-								double t = markerClips[input.markerToJumpTo];
-								(playable.GetGraph().GetResolver() as PlayableDirector).time = t;
-							}
-						}
-						break;
+							break;
 						
+					}
 				}
 			}
-        }
-    }
+		}
+	}
 }

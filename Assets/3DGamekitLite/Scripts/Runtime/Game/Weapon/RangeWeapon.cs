@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Helpers;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Weapon
 {
     public class RangeWeapon : MonoBehaviour
     {

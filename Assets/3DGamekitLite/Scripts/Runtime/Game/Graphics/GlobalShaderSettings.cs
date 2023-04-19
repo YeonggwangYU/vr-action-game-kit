@@ -1,7 +1,6 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Graphics
 {
     [ExecuteInEditMode]
     public class GlobalShaderSettings : MonoBehaviour

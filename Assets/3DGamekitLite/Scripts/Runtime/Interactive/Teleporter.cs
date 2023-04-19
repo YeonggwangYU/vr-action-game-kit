@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
-namespace Gamekit3D.GameCommands
+namespace _3DGamekitLite.Scripts.Runtime.Interactive
 {
 
     [RequireComponent(typeof(Collider))]

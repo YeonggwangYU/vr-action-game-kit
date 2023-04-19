@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-
-namespace Gamekit3D.Cameras
+namespace _3DGamekitLite.Scripts.Runtime.Game.Camera
 {
     [ExecuteInEditMode]
-    [RequireComponent(typeof(Camera))]
+    [RequireComponent(typeof(UnityEngine.Camera))]
     public class LayerCullDistances : MonoBehaviour
     {
         [System.Serializable]
@@ -18,7 +15,7 @@ namespace Gamekit3D.Cameras
             public float[] distances = new float[32];
         }
 
-        public new Camera camera;
+        public new UnityEngine.Camera camera;
 
         public QualitySpecificSettings[] settings = new QualitySpecificSettings[0];
 
@@ -52,7 +49,7 @@ namespace Gamekit3D.Cameras
 
         private void OnEnable()
         {
-            camera = GetComponent<Camera>();
+            camera = GetComponent<UnityEngine.Camera>();
         }
 
         void Start()

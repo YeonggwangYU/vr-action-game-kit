@@ -1,8 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Audio;
+using _3DGamekitLite.Scripts.Runtime.Game.DamageSystem;
+using _3DGamekitLite.Scripts.Runtime.Game.Weapon;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies.Grenadier
 {
     public class GrenadierGrenade : Projectile
     {

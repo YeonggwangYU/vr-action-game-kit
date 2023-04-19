@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Graphics
 {
     public class Dissolve : MonoBehaviour
     {

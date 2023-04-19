@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-namespace Gamekit3D.GameCommands
+namespace _3DGamekitLite.Scripts.Runtime.Interactive
 {
     //Base class to send command on different events (see in SendOnTrigger, SendOnBecameVisible etc. for example of subclasses)
     [SelectionBase]

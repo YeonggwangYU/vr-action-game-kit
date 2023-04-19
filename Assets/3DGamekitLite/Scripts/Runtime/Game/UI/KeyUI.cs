@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Core;
+using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.UI
 {
     public class KeyUI : MonoBehaviour
     {

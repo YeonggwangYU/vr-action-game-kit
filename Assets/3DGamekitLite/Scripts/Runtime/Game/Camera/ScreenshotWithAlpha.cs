@@ -1,12 +1,11 @@
-﻿using UnityEngine;
-using System.IO;
-using System;
-using System.Linq;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Camera
 {
-    [RequireComponent(typeof(Camera))]
+    [RequireComponent(typeof(UnityEngine.Camera))]
     public class ScreenshotWithAlpha : MonoBehaviour
     {
         public int UpScale = 4;
@@ -14,7 +13,7 @@ namespace Gamekit3D
 
         Texture2D Screenshot()
         {
-            var camera = GetComponent<Camera>();
+            var camera = GetComponent<UnityEngine.Camera>();
             int w = camera.pixelWidth * UpScale;
             int h = camera.pixelHeight * UpScale;
             var rt = new RenderTexture(w, h, 32);
@@ -26,7 +25,7 @@ namespace Gamekit3D
                 camera.clearFlags = CameraClearFlags.SolidColor;
                 camera.backgroundColor = new Color(0, 0, 0, 0);
             }
-            var cameras = new List<Camera>(FindObjectsOfType<Camera>());
+            var cameras = new List<UnityEngine.Camera>(FindObjectsOfType<UnityEngine.Camera>());
             cameras.Sort((A, B) => A.depth.CompareTo(B.depth));
             foreach (var c in cameras) c.Render();
             RenderTexture.active = rt;

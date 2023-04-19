@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Gamekit3D.GameCommands
+namespace _3DGamekitLite.Scripts.Runtime.Interactive
 {
     [RequireComponent(typeof(Collider))]
     public class Collectable : MonoBehaviour

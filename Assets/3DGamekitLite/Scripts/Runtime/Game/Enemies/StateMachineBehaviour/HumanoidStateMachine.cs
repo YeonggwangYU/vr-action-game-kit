@@ -1,17 +1,20 @@
 using UnityEngine;
 
-public class HumanoidStateMachine : StateMachineBehaviour
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies.StateMachineBehaviour
 {
-    private static readonly int AnimationBattleRandomHash = Animator.StringToHash("BattleRandom");
-
-    //状態が変わった時に実行
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public class HumanoidStateMachine : UnityEngine.StateMachineBehaviour
     {
-        if (stateInfo.IsName("Idle1"))
+        private static readonly int AnimationBattleRandomHash = Animator.StringToHash("BattleRandom");
+
+        //状態が変わった時に実行
+        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            // 攻撃パターンをリセット
-            animator.SetInteger(AnimationBattleRandomHash, 0);
-            Debug.Log($"Idle1:攻撃パターンをリセット");
+            if (stateInfo.IsName("Idle1"))
+            {
+                // 攻撃パターンをリセット
+                animator.SetInteger(AnimationBattleRandomHash, 0);
+                Debug.Log($"Idle1:攻撃パターンをリセット");
+            }
         }
     }
 }

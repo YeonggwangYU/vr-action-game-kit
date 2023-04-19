@@ -1,9 +1,10 @@
+using _3DGamekitLite.Scripts.Runtime.Interactive.Actions;
 using UnityEditor;
 
-namespace Gamekit3D.GameCommands
+namespace _3DGamekitLite.Scripts.Editor.Interactive
 {
     [CustomEditor(typeof(SimpleTransformer), true)]
-    public class SimpleTransformerEditor : Editor
+    public class SimpleTransformerEditor : UnityEditor.Editor
     {
 
         public override void OnInspectorGUI()

@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Core;
+using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies.Spitter
 {
     public class SpitterSMBSpotted : SceneLinkedSMB<SpitterBehaviour>
     {

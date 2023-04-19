@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using _3DGamekitLite.Scripts.Runtime.Interactive;
 using UnityEditor;
 using UnityEngine;
 
-namespace Gamekit3D.GameCommands
+namespace _3DGamekitLite.Scripts.Editor.Interactive
 {
     public static class CommandGizmos
     {

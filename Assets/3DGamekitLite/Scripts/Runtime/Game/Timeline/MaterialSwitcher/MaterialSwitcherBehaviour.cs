@@ -1,54 +1,57 @@
 using UnityEngine;
 using UnityEngine.Playables;
 
-[System.Serializable]
-public class MaterialSwitcherBehaviour : PlayableBehaviour
+namespace _3DGamekitLite.Scripts.Runtime.Game.Timeline.MaterialSwitcher
 {
     [System.Serializable]
-    public class MaterialIndexPair
+    public class MaterialSwitcherBehaviour : PlayableBehaviour
     {
-        public Material replacementMaterial;
-        public int materialIndexToReplace;
-    }
-
-    public MaterialIndexPair[] materialIndexPairs;
-    [HideInInspector]
-    public Material[] materials;
-    [HideInInspector]
-    public bool setupCorrectly;
-
-    public bool SetMaterials(Material[] sharedMaterialsCopy)
-    {
-        for (int i = 0; i < materialIndexPairs.Length; i++)
+        [System.Serializable]
+        public class MaterialIndexPair
         {
-            if (materialIndexPairs[i].replacementMaterial == null)
-                return false;
-
-            if (materialIndexPairs[i].materialIndexToReplace >= sharedMaterialsCopy.Length || materialIndexPairs[i].materialIndexToReplace < 0)
-                return false;
+            public Material replacementMaterial;
+            public int materialIndexToReplace;
         }
 
-        materials = new Material[sharedMaterialsCopy.Length];
+        public MaterialIndexPair[] materialIndexPairs;
+        [HideInInspector]
+        public Material[] materials;
+        [HideInInspector]
+        public bool setupCorrectly;
 
-        for (int i = 0; i < materials.Length; i++)
+        public bool SetMaterials(Material[] sharedMaterialsCopy)
         {
-            bool assigned = false;
-
-            for (int j = 0; j < materialIndexPairs.Length; j++)
+            for (int i = 0; i < materialIndexPairs.Length; i++)
             {
-                if (i == materialIndexPairs[j].materialIndexToReplace)
+                if (materialIndexPairs[i].replacementMaterial == null)
+                    return false;
+
+                if (materialIndexPairs[i].materialIndexToReplace >= sharedMaterialsCopy.Length || materialIndexPairs[i].materialIndexToReplace < 0)
+                    return false;
+            }
+
+            materials = new Material[sharedMaterialsCopy.Length];
+
+            for (int i = 0; i < materials.Length; i++)
+            {
+                bool assigned = false;
+
+                for (int j = 0; j < materialIndexPairs.Length; j++)
                 {
-                    materials[i] = new Material (materialIndexPairs[j].replacementMaterial);
-                    assigned = true;
+                    if (i == materialIndexPairs[j].materialIndexToReplace)
+                    {
+                        materials[i] = new Material (materialIndexPairs[j].replacementMaterial);
+                        assigned = true;
+                    }
+                }
+
+                if (!assigned)
+                {
+                    materials[i] = new Material(sharedMaterialsCopy[i]);
                 }
             }
-
-            if (!assigned)
-            {
-                materials[i] = new Material(sharedMaterialsCopy[i]);
-            }
+            setupCorrectly = true;
+            return true;
         }
-        setupCorrectly = true;
-        return true;
     }
 }

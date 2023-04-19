@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace Gamekit3D.Cameras
+namespace _3DGamekitLite.Scripts.Runtime.Game.Camera
 {
     /// <summary>
     /// A class that mimic's the Unity Editor camera.

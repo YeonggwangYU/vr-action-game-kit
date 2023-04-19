@@ -2,12 +2,15 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-[TrackColor(0.855f, 0.8623f, 0.87f)]
-[TrackClipType(typeof(CutsceneScriptControlClip))]
-public class CutsceneScriptControlTrack : TrackAsset
+namespace _3DGamekitLite.Scripts.Runtime.Game.Timeline.CutsceneScriptControl
 {
-    public override Playable CreateTrackMixer(PlayableGraph graph, GameObject go, int inputCount)
+    [TrackColor(0.855f, 0.8623f, 0.87f)]
+    [TrackClipType(typeof(CutsceneScriptControlClip))]
+    public class CutsceneScriptControlTrack : TrackAsset
     {
-        return ScriptPlayable<CutsceneScriptControlMixerBehaviour>.Create (graph, inputCount);
+        public override Playable CreateTrackMixer(PlayableGraph graph, GameObject go, int inputCount)
+        {
+            return ScriptPlayable<CutsceneScriptControlMixerBehaviour>.Create (graph, inputCount);
+        }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.SceneManagement
 {
     /// <summary>
     /// This class is used to put the player character into a specific state, usually upon entering a scene.

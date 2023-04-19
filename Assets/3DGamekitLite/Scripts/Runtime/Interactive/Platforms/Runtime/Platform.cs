@@ -1,10 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-
-
-namespace Gamekit3D.GameCommands
+namespace _3DGamekitLite.Scripts.Runtime.Interactive.Platforms.Runtime
 {
 
     public class Platform : MonoBehaviour

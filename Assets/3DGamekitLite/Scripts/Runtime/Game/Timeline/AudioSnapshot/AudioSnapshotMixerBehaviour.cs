@@ -1,55 +1,56 @@
-using System;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Playables;
-using UnityEngine.Timeline;
 
-public class AudioSnapshotMixerBehaviour : PlayableBehaviour
+namespace _3DGamekitLite.Scripts.Runtime.Game.Timeline.AudioSnapshot
 {
-    AudioMixer m_Mixer;
-    AudioMixerSnapshot[] m_Snapshots;
-    float[] m_CurrentWeights;
-
-    public override void OnGraphStart (Playable playable)
+    public class AudioSnapshotMixerBehaviour : PlayableBehaviour
     {
-        int inputCount = playable.GetInputCount ();
+        AudioMixer m_Mixer;
+        AudioMixerSnapshot[] m_Snapshots;
+        float[] m_CurrentWeights;
 
-        m_Snapshots = new AudioMixerSnapshot[inputCount];
-        m_CurrentWeights = new float[inputCount];
-
-        for (int i = 0; i < inputCount; i++)
+        public override void OnGraphStart (Playable playable)
         {
-            ScriptPlayable<AudioSnapshotBehaviour> inputPlayable = (ScriptPlayable<AudioSnapshotBehaviour>)playable.GetInput(i);
-            AudioSnapshotBehaviour input = inputPlayable.GetBehaviour ();
+            int inputCount = playable.GetInputCount ();
 
-            m_Snapshots[i] = input.snapshot;
+            m_Snapshots = new AudioMixerSnapshot[inputCount];
+            m_CurrentWeights = new float[inputCount];
+
+            for (int i = 0; i < inputCount; i++)
+            {
+                ScriptPlayable<AudioSnapshotBehaviour> inputPlayable = (ScriptPlayable<AudioSnapshotBehaviour>)playable.GetInput(i);
+                AudioSnapshotBehaviour input = inputPlayable.GetBehaviour ();
+
+                m_Snapshots[i] = input.snapshot;
+            }
+
+            if(m_Snapshots.Length > 0)
+                m_Mixer = m_Snapshots[0].audioMixer;
         }
 
-        if(m_Snapshots.Length > 0)
-            m_Mixer = m_Snapshots[0].audioMixer;
-    }
-
-    public override void ProcessFrame(Playable playable, FrameData info, object playerData)
-    {
-        // First frame of each behaviour: play audio clip if given, play audio source if given
-        int inputCount = playable.GetInputCount ();
-
-        for (int i = 0; i < inputCount; i++)
+        public override void ProcessFrame(Playable playable, FrameData info, object playerData)
         {
-            float inputWeight = playable.GetInputWeight(i);
+            // First frame of each behaviour: play audio clip if given, play audio source if given
+            int inputCount = playable.GetInputCount ();
 
-            m_CurrentWeights[i] = inputWeight;
+            for (int i = 0; i < inputCount; i++)
+            {
+                float inputWeight = playable.GetInputWeight(i);
 
-            ScriptPlayable<AudioSnapshotBehaviour> inputPlayable = (ScriptPlayable<AudioSnapshotBehaviour>)playable.GetInput(i);
-            AudioSnapshotBehaviour input = inputPlayable.GetBehaviour();
+                m_CurrentWeights[i] = inputWeight;
 
-            if(Application.isPlaying)
-                input.PlayAudio (inputWeight);
+                ScriptPlayable<AudioSnapshotBehaviour> inputPlayable = (ScriptPlayable<AudioSnapshotBehaviour>)playable.GetInput(i);
+                AudioSnapshotBehaviour input = inputPlayable.GetBehaviour();
 
-            input.audioSource.volume = input.weightedVolume ? input.volume * playable.GetInputWeight (i) : input.volume;
+                if(Application.isPlaying)
+                    input.PlayAudio (inputWeight);
+
+                input.audioSource.volume = input.weightedVolume ? input.volume * playable.GetInputWeight (i) : input.volume;
+            }
+
+            if(m_Mixer != null)
+                m_Mixer.TransitionToSnapshots(m_Snapshots, m_CurrentWeights, 0f);
         }
-
-        if(m_Mixer != null)
-            m_Mixer.TransitionToSnapshots(m_Snapshots, m_CurrentWeights, 0f);
     }
 }

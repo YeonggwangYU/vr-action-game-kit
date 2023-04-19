@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Core;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies.Grenadier
 {
     public class GrenadierSMBRangeAttack : SceneLinkedSMB<GrenadierBehaviour>
     {

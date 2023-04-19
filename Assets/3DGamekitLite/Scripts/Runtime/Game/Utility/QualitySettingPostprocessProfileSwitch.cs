@@ -1,13 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
-#if UNITY_EDITOR
-using UnityEditor;
-using System.Linq;
-#endif
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Utility
 {
     [ExecuteInEditMode]
     public class QualitySettingPostprocessProfileSwitch : MonoBehaviour

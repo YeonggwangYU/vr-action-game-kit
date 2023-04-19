@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.SceneManagement
 {
     public class ScreenFader : MonoBehaviour
     {

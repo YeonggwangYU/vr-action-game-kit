@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.SceneManagement
 {
     public class PersistentDataManager : MonoBehaviour
     {

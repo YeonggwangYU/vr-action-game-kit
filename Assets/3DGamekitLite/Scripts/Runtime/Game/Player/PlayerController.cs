@@ -1,9 +1,15 @@
-using UnityEngine;
-using Gamekit3D.Message;
 using System.Collections;
-using UnityEngine.XR.WSA;
+using _3DGamekitLite.Scripts.Runtime.Game.Audio;
+using _3DGamekitLite.Scripts.Runtime.Game.Camera;
+using _3DGamekitLite.Scripts.Runtime.Game.Core;
+using _3DGamekitLite.Scripts.Runtime.Game.DamageSystem;
+using _3DGamekitLite.Scripts.Runtime.Game.Helpers;
+using _3DGamekitLite.Scripts.Runtime.Game.Helpers.Message;
+using _3DGamekitLite.Scripts.Runtime.Game.Weapon;
+using _3DGamekitLite.Scripts.Runtime.SceneManagement;
+using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Player
 {
     [RequireComponent(typeof(CharacterController))]
     [RequireComponent(typeof(Animator))]

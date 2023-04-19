@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Gamekit3D;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Camera;
+using _3DGamekitLite.Scripts.Runtime.Game.Player;
+using _3DGamekitLite.Scripts.Runtime.SceneManagement;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Playables;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.UI
 {
     public class StartUI : MonoBehaviour
     {

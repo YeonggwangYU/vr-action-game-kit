@@ -1,43 +1,45 @@
 using System;
 using UnityEngine;
 using UnityEngine.Playables;
-using UnityEngine.Timeline;
 
-[Serializable]
-public class TimeMachineBehaviour : PlayableBehaviour
+namespace _3DGamekitLite.Scripts.Runtime.Game.Timeline.TimeMachine
 {
-	public TimeMachineAction action;
-	public Condition condition;
-	public string markerToJumpTo, markerLabel;
-	public float timeToJumpTo;
-
-	[HideInInspector]
-	public bool clipExecuted = false; //the user shouldn't author this, the Mixer does
-
-	public bool ConditionMet()
+	[Serializable]
+	public class TimeMachineBehaviour : PlayableBehaviour
 	{
-		switch(condition)
+		public TimeMachineAction action;
+		public Condition condition;
+		public string markerToJumpTo, markerLabel;
+		public float timeToJumpTo;
+
+		[HideInInspector]
+		public bool clipExecuted = false; //the user shouldn't author this, the Mixer does
+
+		public bool ConditionMet()
 		{
-			case Condition.Always:
-				return true;
+			switch(condition)
+			{
+				case Condition.Always:
+					return true;
 
-			case Condition.Never:
-			default:
-				return false;
+				case Condition.Never:
+				default:
+					return false;
+			}
 		}
-	}
 
-	public enum TimeMachineAction
-	{
-		Marker,
-		JumpToTime,
-		JumpToMarker,
-		Pause,
-	}
+		public enum TimeMachineAction
+		{
+			Marker,
+			JumpToTime,
+			JumpToMarker,
+			Pause,
+		}
 
-	public enum Condition
-	{
-		Always,
-		Never,
+		public enum Condition
+		{
+			Always,
+			Never,
+		}
 	}
 }

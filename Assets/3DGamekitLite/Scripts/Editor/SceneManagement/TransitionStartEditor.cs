@@ -1,13 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Core;
+using _3DGamekitLite.Scripts.Runtime.SceneManagement;
 using UnityEditor;
 using UnityEngine;
-using Gamekit3D;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Editor.SceneManagement
 {
     [CustomEditor(typeof(TransitionPoint))]
-    public class TransitionStartEditor : Editor
+    public class TransitionStartEditor : UnityEditor.Editor
     {
         SerializedProperty m_TransitioningGameObjectProp;
         SerializedProperty m_TransitionTypeProp;

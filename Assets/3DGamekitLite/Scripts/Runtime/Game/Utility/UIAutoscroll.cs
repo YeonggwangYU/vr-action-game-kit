@@ -1,9 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Utility
 {
     public class UIAutoscroll : MonoBehaviour
     {

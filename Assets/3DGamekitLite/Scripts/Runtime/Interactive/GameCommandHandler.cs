@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace Gamekit3D.GameCommands
+namespace _3DGamekitLite.Scripts.Runtime.Interactive
 {
     // This class need to be subclassed to implement behaviour based on receiving game command 
     // (see class in SwitchMaterial.cs or PlaySound.cs for sample)

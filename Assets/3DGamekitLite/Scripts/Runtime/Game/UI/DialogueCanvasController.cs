@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using _3DGamekitLite.Scripts.Runtime.Game.Localization;
 using TMPro;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.UI
 {
     public class DialogueCanvasController : MonoBehaviour
     {

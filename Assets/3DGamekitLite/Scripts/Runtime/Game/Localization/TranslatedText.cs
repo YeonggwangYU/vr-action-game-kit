@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Localization
 {
     public class TranslatedText : MonoBehaviour
     {

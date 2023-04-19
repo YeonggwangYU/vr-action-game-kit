@@ -1,9 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Audio;
+using _3DGamekitLite.Scripts.Runtime.Game.Core;
+using _3DGamekitLite.Scripts.Runtime.Game.DamageSystem;
+using _3DGamekitLite.Scripts.Runtime.Game.Helpers;
+using _3DGamekitLite.Scripts.Runtime.Game.Player;
+using _3DGamekitLite.Scripts.Runtime.Game.Weapon;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies.Grenadier
 {
     [RequireComponent(typeof(EnemyController))]
     [RequireComponent(typeof(NavMeshAgent))]

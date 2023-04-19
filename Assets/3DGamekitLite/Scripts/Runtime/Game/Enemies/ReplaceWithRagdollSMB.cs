@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Animations;
+﻿using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
 {
-    public class ReplaceWithRagdollSMB : StateMachineBehaviour
+    public class ReplaceWithRagdollSMB : UnityEngine.StateMachineBehaviour
     {
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash)
         {

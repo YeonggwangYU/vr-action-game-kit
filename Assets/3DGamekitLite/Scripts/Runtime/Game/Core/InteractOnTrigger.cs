@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Core
 {
     [RequireComponent(typeof(Collider))]
     public class InteractOnTrigger : MonoBehaviour

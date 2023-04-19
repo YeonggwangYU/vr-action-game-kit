@@ -1,8 +1,9 @@
 ﻿using System;
+using _3DGamekitLite.Scripts.Runtime.SceneManagement;
 using UnityEditor;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Editor.SceneManagement
 {
     [CustomPropertyDrawer(typeof(SceneNameAttribute))]
     public class SceneNameDrawer : PropertyDrawer

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Editor
 {
     public class NewSceneCreator : EditorWindow
     {

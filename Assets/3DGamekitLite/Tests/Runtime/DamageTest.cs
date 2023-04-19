@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using _3DGamekitLite.Scripts.Runtime.Game.Weapon;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;

@@ -1,10 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using _3DGamekitLite.Scripts.Runtime.Game.Weapon;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
 {
     public class GuardRightCollider : MonoBehaviour
     {

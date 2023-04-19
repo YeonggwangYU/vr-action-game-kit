@@ -2,13 +2,15 @@ using System;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
-using UnityEngine.Timeline;
 
-[Serializable]
-public class SceneReloaderBehaviour : PlayableBehaviour
+namespace _3DGamekitLite.Scripts.Runtime.Game.Timeline.SceneReloader
 {
-    public void ReloadScene (GameObject sceneGameObject)
+    [Serializable]
+    public class SceneReloaderBehaviour : PlayableBehaviour
     {
-        SceneManager.LoadSceneAsync (sceneGameObject.scene.buildIndex);
+        public void ReloadScene (GameObject sceneGameObject)
+        {
+            SceneManager.LoadSceneAsync (sceneGameObject.scene.buildIndex);
+        }
     }
 }

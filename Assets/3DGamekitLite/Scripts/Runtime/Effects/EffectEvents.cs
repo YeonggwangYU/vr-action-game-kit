@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using _3DGamekitLite.Scripts.Runtime.Game.Core;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Effects
 {
     public class EffectEvents : MonoBehaviour
     {

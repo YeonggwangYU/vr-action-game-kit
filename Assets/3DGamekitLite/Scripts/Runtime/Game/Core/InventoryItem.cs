@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Helpers;
+using _3DGamekitLite.Scripts.Runtime.SceneManagement;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Core
 {
     [RequireComponent(typeof(Collider))]
     public class InventoryItem : MonoBehaviour, IDataPersister

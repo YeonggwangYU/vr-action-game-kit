@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Audio
 {
     [RequireComponent(typeof(AudioSource))]
     public class RandomAudioPlayer : MonoBehaviour

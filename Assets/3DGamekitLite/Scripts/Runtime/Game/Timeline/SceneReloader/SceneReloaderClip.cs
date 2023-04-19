@@ -3,18 +3,21 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-[Serializable]
-public class SceneReloaderClip : PlayableAsset, ITimelineClipAsset
+namespace _3DGamekitLite.Scripts.Runtime.Game.Timeline.SceneReloader
 {
-    public SceneReloaderBehaviour template = new SceneReloaderBehaviour ();
-
-    public ClipCaps clipCaps
+    [Serializable]
+    public class SceneReloaderClip : PlayableAsset, ITimelineClipAsset
     {
-        get { return ClipCaps.None; }
-    }
+        public SceneReloaderBehaviour template = new SceneReloaderBehaviour ();
 
-    public override Playable CreatePlayable (PlayableGraph graph, GameObject owner)
-    {
-        return ScriptPlayable<SceneReloaderBehaviour>.Create (graph, template);
+        public ClipCaps clipCaps
+        {
+            get { return ClipCaps.None; }
+        }
+
+        public override Playable CreatePlayable (PlayableGraph graph, GameObject owner)
+        {
+            return ScriptPlayable<SceneReloaderBehaviour>.Create (graph, template);
+        }
     }
 }

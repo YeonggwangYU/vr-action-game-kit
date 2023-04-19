@@ -3,18 +3,21 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-[Serializable]
-public class MaterialSwitcherClip : PlayableAsset, ITimelineClipAsset
+namespace _3DGamekitLite.Scripts.Runtime.Game.Timeline.MaterialSwitcher
 {
-    public MaterialSwitcherBehaviour template = new MaterialSwitcherBehaviour ();
-
-    public ClipCaps clipCaps
+    [Serializable]
+    public class MaterialSwitcherClip : PlayableAsset, ITimelineClipAsset
     {
-        get { return ClipCaps.Extrapolation; }
-    }
+        public MaterialSwitcherBehaviour template = new MaterialSwitcherBehaviour ();
 
-    public override Playable CreatePlayable (PlayableGraph graph, GameObject owner)
-    {
-        return ScriptPlayable<MaterialSwitcherBehaviour>.Create (graph, template);
+        public ClipCaps clipCaps
+        {
+            get { return ClipCaps.Extrapolation; }
+        }
+
+        public override Playable CreatePlayable (PlayableGraph graph, GameObject owner)
+        {
+            return ScriptPlayable<MaterialSwitcherBehaviour>.Create (graph, template);
+        }
     }
 }

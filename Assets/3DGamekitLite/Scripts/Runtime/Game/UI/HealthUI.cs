@@ -1,7 +1,8 @@
 ﻿using System.Collections;
+using _3DGamekitLite.Scripts.Runtime.Game.DamageSystem;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.UI
 {
     public class HealthUI : MonoBehaviour
     {

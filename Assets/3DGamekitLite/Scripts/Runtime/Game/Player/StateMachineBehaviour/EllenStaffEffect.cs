@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Player.StateMachineBehaviour
 {
-    public class EllenStaffEffect : StateMachineBehaviour
+    public class EllenStaffEffect : UnityEngine.StateMachineBehaviour
     {
         public int effectIndex;
 

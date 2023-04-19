@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Enemies.Grenadier;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Weapon
 {
     public class Spit : GrenadierGrenade
     {

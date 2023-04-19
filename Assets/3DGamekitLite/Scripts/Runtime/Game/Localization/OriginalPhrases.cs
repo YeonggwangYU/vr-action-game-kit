@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Localization
 {
     [CreateAssetMenu]
     public class OriginalPhrases : ScriptableObject

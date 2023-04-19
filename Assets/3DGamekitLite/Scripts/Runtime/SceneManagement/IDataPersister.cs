@@ -1,7 +1,6 @@
 ﻿using System;
-using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.SceneManagement
 {
     /// <summary>
     /// Classes that implement this interface should have an serialized instance of DataSettings to register through.

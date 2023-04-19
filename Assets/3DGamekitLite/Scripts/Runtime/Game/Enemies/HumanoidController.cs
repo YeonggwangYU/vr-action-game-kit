@@ -1,13 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-//NavMeshAgentを使うためにインポートします
 using UnityEngine.AI;
-using UnityEngine.Serialization;
+//NavMeshAgentを使うためにインポートします
 using Random = UnityEngine.Random;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
 {
     public class HumanoidController : MonoBehaviour
     {

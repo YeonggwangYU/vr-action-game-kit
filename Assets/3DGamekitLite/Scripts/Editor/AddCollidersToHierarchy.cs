@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Editor
 {
     public class AddCollidersToHierarchy : MonoBehaviour
     {

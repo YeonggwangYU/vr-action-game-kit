@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
+using _3DGamekitLite.Scripts.Runtime.Game.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.SceneManagement
 {
     /// <summary>
     /// This class is used to transition between scenes. This includes triggering all the things that need to happen on transition such as data persistence.

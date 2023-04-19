@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Core;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies.Chomper
 {
     public class ChomperSMBPursuit : SceneLinkedSMB<ChomperBehavior>
     {

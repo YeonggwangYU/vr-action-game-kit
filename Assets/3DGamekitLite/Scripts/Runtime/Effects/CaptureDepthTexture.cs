@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Effects
 {
     [ExecuteInEditMode]
     public class CaptureDepthTexture : MonoBehaviour

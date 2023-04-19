@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Helpers
 {
     public class RandomStateSMB : StateMachineBehaviour
     {

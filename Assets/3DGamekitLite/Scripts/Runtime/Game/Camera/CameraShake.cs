@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using Cinemachine;
+using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Camera
 {
     public class CameraShake : MonoBehaviour
     {

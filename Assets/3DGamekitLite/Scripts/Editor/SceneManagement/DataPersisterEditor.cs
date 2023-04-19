@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using _3DGamekitLite.Scripts.Runtime.SceneManagement;
 using UnityEditor;
-using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Editor.SceneManagement
 {
-    public abstract class DataPersisterEditor : Editor
+    public abstract class DataPersisterEditor : UnityEditor.Editor
     {
         IDataPersister m_DataPersister;
 

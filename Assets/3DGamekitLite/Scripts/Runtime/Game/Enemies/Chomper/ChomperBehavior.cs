@@ -1,7 +1,14 @@
-﻿using Gamekit3D.Message;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Audio;
+using _3DGamekitLite.Scripts.Runtime.Game.Camera;
+using _3DGamekitLite.Scripts.Runtime.Game.Core;
+using _3DGamekitLite.Scripts.Runtime.Game.DamageSystem;
+using _3DGamekitLite.Scripts.Runtime.Game.Helpers;
+using _3DGamekitLite.Scripts.Runtime.Game.Helpers.Message;
+using _3DGamekitLite.Scripts.Runtime.Game.Player;
+using _3DGamekitLite.Scripts.Runtime.Game.Weapon;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies.Chomper
 {
     [DefaultExecutionOrder(100)]
     public class ChomperBehavior : MonoBehaviour, IMessageReceiver
@@ -216,14 +223,14 @@ namespace Gamekit3D
             meleeWeapon.EndAttack();
         }
 
-        public void OnReceiveMessage(Message.MessageType type, object sender, object msg)
+        public void OnReceiveMessage(MessageType type, object sender, object msg)
         {
             switch (type)
             {
-                case Message.MessageType.DEAD:
+                case MessageType.DEAD:
                     Death((Damageable.DamageMessage)msg);
                     break;
-                case Message.MessageType.DAMAGED:
+                case MessageType.DAMAGED:
                     ApplyDamage((Damageable.DamageMessage)msg);
                     break;
                 default:

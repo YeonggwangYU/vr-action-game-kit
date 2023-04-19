@@ -1,14 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Gamekit3D.Message;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Audio;
+using _3DGamekitLite.Scripts.Runtime.Game.Camera;
+using _3DGamekitLite.Scripts.Runtime.Game.Core;
+using _3DGamekitLite.Scripts.Runtime.Game.DamageSystem;
+using _3DGamekitLite.Scripts.Runtime.Game.Helpers;
+using _3DGamekitLite.Scripts.Runtime.Game.Helpers.Message;
+using _3DGamekitLite.Scripts.Runtime.Game.Player;
+using _3DGamekitLite.Scripts.Runtime.Game.Weapon;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.AI;
 #if UNITY_EDITOR
 using MessageType = UnityEditor.MessageType;
 #endif
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies.Spitter
 {
     [DefaultExecutionOrder(100)]
     public class SpitterBehaviour : MonoBehaviour, IMessageReceiver
@@ -55,14 +59,14 @@ namespace Gamekit3D
 
         }
 
-        public void OnReceiveMessage(Message.MessageType type, object sender, object msg)
+        public void OnReceiveMessage(Helpers.Message.MessageType type, object sender, object msg)
         {
             switch (type)
             {
-                case Message.MessageType.DEAD:
+                case Helpers.Message.MessageType.DEAD:
                     Death((Damageable.DamageMessage)msg);
                     break;
-                case Message.MessageType.DAMAGED:
+                case Helpers.Message.MessageType.DAMAGED:
                     ApplyDamage((Damageable.DamageMessage)msg);
                     break;
                 default:

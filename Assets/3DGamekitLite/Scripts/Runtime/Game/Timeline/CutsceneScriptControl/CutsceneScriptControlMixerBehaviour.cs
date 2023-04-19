@@ -1,25 +1,26 @@
-using System;
 using UnityEngine;
 using UnityEngine.Playables;
-using UnityEngine.Timeline;
 
-public class CutsceneScriptControlMixerBehaviour : PlayableBehaviour
+namespace _3DGamekitLite.Scripts.Runtime.Game.Timeline.CutsceneScriptControl
 {
-    public override void ProcessFrame(Playable playable, FrameData info, object playerData)
+    public class CutsceneScriptControlMixerBehaviour : PlayableBehaviour
     {
-        int inputCount = playable.GetInputCount ();
-
-        for (int i = 0; i < inputCount; i++)
+        public override void ProcessFrame(Playable playable, FrameData info, object playerData)
         {
-            float inputWeight = playable.GetInputWeight(i);
+            int inputCount = playable.GetInputCount ();
 
-            if(!Mathf.Approximately (inputWeight, 1f))
-                continue;
+            for (int i = 0; i < inputCount; i++)
+            {
+                float inputWeight = playable.GetInputWeight(i);
 
-            ScriptPlayable<CutsceneScriptControlBehaviour> inputPlayable = (ScriptPlayable<CutsceneScriptControlBehaviour>)playable.GetInput(i);
-            CutsceneScriptControlBehaviour input = inputPlayable.GetBehaviour ();
+                if(!Mathf.Approximately (inputWeight, 1f))
+                    continue;
 
-            input.playerInput.enabled = input.playerInputEnabled;
+                ScriptPlayable<CutsceneScriptControlBehaviour> inputPlayable = (ScriptPlayable<CutsceneScriptControlBehaviour>)playable.GetInput(i);
+                CutsceneScriptControlBehaviour input = inputPlayable.GetBehaviour ();
+
+                input.playerInput.enabled = input.playerInputEnabled;
+            }
         }
     }
 }

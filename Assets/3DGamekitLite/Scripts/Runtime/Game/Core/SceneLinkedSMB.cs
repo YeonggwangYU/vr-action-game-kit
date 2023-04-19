@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Animations;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Core
 {
     public class SceneLinkedSMB<TMonoBehaviour> : SealedSMB 
         where TMonoBehaviour : MonoBehaviour

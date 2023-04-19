@@ -1,8 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using _3DGamekitLite.Scripts.Runtime.Game.Player;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.SceneManagement
 {
     /// <summary>
     /// This class is used to move gameobjects from one position to another in the scene.

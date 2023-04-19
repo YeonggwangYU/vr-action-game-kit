@@ -1,17 +1,19 @@
 using System;
-using UnityEngine;
+using _3DGamekitLite.Scripts.Runtime.Game.Player;
 using UnityEngine.Playables;
-using UnityEngine.Timeline;
 
-[Serializable]
-public class CutsceneScriptControlBehaviour : PlayableBehaviour
+namespace _3DGamekitLite.Scripts.Runtime.Game.Timeline.CutsceneScriptControl
 {
-    public bool playerInputEnabled;
-    public bool useRootMotion;
-    public PlayerInput playerInput;
-
-    public override void OnGraphStart (Playable playable)
+    [Serializable]
+    public class CutsceneScriptControlBehaviour : PlayableBehaviour
     {
+        public bool playerInputEnabled;
+        public bool useRootMotion;
+        public PlayerInput playerInput;
+
+        public override void OnGraphStart (Playable playable)
+        {
         
+        }
     }
 }

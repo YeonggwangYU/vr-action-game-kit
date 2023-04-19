@@ -1,77 +1,79 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine;
 
-public class FilterLOD : EditorWindow
+namespace _3DGamekitLite.Scripts.Editor
 {
-    [MenuItem("Tools/FilterLOD")]
-    static void Filter()
+    public class FilterLOD : EditorWindow
     {
-        GetWindow<FilterLOD>();
-    }
-
-    private List<GameObject> lodGroupWithUnaprented = new List<GameObject>();
-    private Vector2 scrollPos;
-
-    private void OnEnable()
-    {
-        scrollPos = Vector2.zero;
-        lodGroupWithUnaprented.Clear();
-        var gos = EditorSceneManager.GetActiveScene().GetRootGameObjects();
-
-        for(int i = 0; i < gos.Length; ++i)
+        [MenuItem("Tools/FilterLOD")]
+        static void Filter()
         {
-            HierarchicalDown(gos[i]);
+            GetWindow<FilterLOD>();
         }
-    }
 
-    private void OnGUI()
-    {
-        scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+        private List<GameObject> lodGroupWithUnaprented = new List<GameObject>();
+        private Vector2 scrollPos;
 
-        for (int i = 0; i < lodGroupWithUnaprented.Count; ++i)
+        private void OnEnable()
         {
-            if (GUILayout.Button(lodGroupWithUnaprented[i].name))
+            scrollPos = Vector2.zero;
+            lodGroupWithUnaprented.Clear();
+            var gos = EditorSceneManager.GetActiveScene().GetRootGameObjects();
+
+            for(int i = 0; i < gos.Length; ++i)
             {
-                Selection.activeGameObject = lodGroupWithUnaprented[i];
-                EditorGUIUtility.PingObject(lodGroupWithUnaprented[i]);
+                HierarchicalDown(gos[i]);
             }
         }
 
-        EditorGUILayout.EndScrollView();
-    }
-
-    void HierarchicalDown(GameObject parent)
-    {
-        LODGroup grp = parent.GetComponent<LODGroup>();
-
-        if (grp != null)
+        private void OnGUI()
         {
-            int expectMeshRenderer = 0;
-            for (int i = 0; i < grp.lodCount; ++i)
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
+
+            for (int i = 0; i < lodGroupWithUnaprented.Count; ++i)
             {
-                expectMeshRenderer += grp.GetLODs()[i].renderers.Length;
+                if (GUILayout.Button(lodGroupWithUnaprented[i].name))
+                {
+                    Selection.activeGameObject = lodGroupWithUnaprented[i];
+                    EditorGUIUtility.PingObject(lodGroupWithUnaprented[i]);
+                }
             }
 
-            int actualRenderer = 0;
-            foreach (Transform t in grp.transform)
-            {
-                if (t.GetComponent<Renderer>() != null)
-                    actualRenderer += 1;
-            }
-
-            if (expectMeshRenderer != actualRenderer)
-            {
-                lodGroupWithUnaprented.Add(parent);
-            }
+            EditorGUILayout.EndScrollView();
         }
-        else
+
+        void HierarchicalDown(GameObject parent)
         {
-            for (int i = 0; i < parent.transform.childCount; ++i)
+            LODGroup grp = parent.GetComponent<LODGroup>();
+
+            if (grp != null)
             {
-                HierarchicalDown(parent.transform.GetChild(i).gameObject);
+                int expectMeshRenderer = 0;
+                for (int i = 0; i < grp.lodCount; ++i)
+                {
+                    expectMeshRenderer += grp.GetLODs()[i].renderers.Length;
+                }
+
+                int actualRenderer = 0;
+                foreach (Transform t in grp.transform)
+                {
+                    if (t.GetComponent<Renderer>() != null)
+                        actualRenderer += 1;
+                }
+
+                if (expectMeshRenderer != actualRenderer)
+                {
+                    lodGroupWithUnaprented.Add(parent);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < parent.transform.childCount; ++i)
+                {
+                    HierarchicalDown(parent.transform.GetChild(i).gameObject);
+                }
             }
         }
     }

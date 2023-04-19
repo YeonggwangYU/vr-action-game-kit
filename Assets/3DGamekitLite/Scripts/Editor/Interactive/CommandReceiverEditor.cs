@@ -1,12 +1,13 @@
-using UnityEngine;
-using UnityEditor;
 using System.Collections.Generic;
+using _3DGamekitLite.Scripts.Runtime.Interactive;
+using UnityEditor;
+using UnityEngine;
 
-namespace Gamekit3D.GameCommands
+namespace _3DGamekitLite.Scripts.Editor.Interactive
 {
     [SelectionBase]
     [CustomEditor(typeof(GameCommandReceiver), true)]
-    public class CommandReceiverEditor : Editor
+    public class CommandReceiverEditor : UnityEditor.Editor
     {
         List<SendGameCommand> senders = new List<SendGameCommand>();
 

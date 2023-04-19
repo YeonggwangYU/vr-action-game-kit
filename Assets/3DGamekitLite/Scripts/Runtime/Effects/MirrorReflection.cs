@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Effects
 {
     [ExecuteInEditMode]
     public class MirrorReflection : MonoBehaviour

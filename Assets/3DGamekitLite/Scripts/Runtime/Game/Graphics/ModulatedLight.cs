@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Graphics
 {
     [RequireComponent(typeof(Light))]
     public class ModulatedLight : MonoBehaviour

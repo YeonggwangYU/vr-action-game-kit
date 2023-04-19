@@ -1,6 +1,7 @@
+using _3DGamekitLite.Scripts.Runtime.Game.Weapon;
 using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
 {
     public class HumanoidRootController : MonoBehaviour
     {

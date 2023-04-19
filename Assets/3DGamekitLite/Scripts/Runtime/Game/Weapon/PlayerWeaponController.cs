@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Numerics;
+﻿using System.Collections;
+using _3DGamekitLite.Scripts.Runtime.Game.Enemies;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.XR;
-using UnityEngine.XR.Interaction.Toolkit;
 using Vector3 = UnityEngine.Vector3;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Weapon
 {
     public class PlayerWeaponController : MonoBehaviour
     {

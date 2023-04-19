@@ -1,9 +1,8 @@
-﻿using UnityEngine;
-#if UNITY_EDITOR
+﻿using _3DGamekitLite.Scripts.Runtime.Game.DamageSystem;
 using UnityEditor;
-#endif
+using UnityEngine;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
 {
     public class ContactDamager : MonoBehaviour
     {

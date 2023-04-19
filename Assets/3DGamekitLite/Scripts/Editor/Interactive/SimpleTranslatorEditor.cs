@@ -1,8 +1,8 @@
-using UnityEngine;
+using _3DGamekitLite.Scripts.Runtime.Interactive.Actions;
 using UnityEditor;
-using System.Collections.Generic;
+using UnityEngine;
 
-namespace Gamekit3D.GameCommands
+namespace _3DGamekitLite.Scripts.Editor.Interactive
 {
 
     [CustomEditor(typeof(SimpleTranslator), true)]

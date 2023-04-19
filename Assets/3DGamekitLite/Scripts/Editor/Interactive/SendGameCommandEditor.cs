@@ -1,13 +1,13 @@
-﻿using UnityEngine;
+﻿using _3DGamekitLite.Scripts.Runtime.Interactive;
 using UnityEditor;
-using UnityEditorInternal;
+using UnityEngine;
 
-namespace Gamekit3D.GameCommands
+namespace _3DGamekitLite.Scripts.Editor.Interactive
 {
 
     [SelectionBase]
     [CustomEditor(typeof(SendGameCommand), true)]
-    public class SendGameCommandEditor : Editor
+    public class SendGameCommandEditor : UnityEditor.Editor
     {
         void OnSceneGUI()
         {

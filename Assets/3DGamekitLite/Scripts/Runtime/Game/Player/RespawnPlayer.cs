@@ -1,8 +1,10 @@
-namespace Gamekit3D.GameCommands
+using _3DGamekitLite.Scripts.Runtime.Interactive;
+
+namespace _3DGamekitLite.Scripts.Runtime.Game.Player
 {
     public class RespawnPlayer : GameCommandHandler
     {
-        public Gamekit3D.PlayerController player;
+        public PlayerController player;
 
         public override void PerformInteraction()
         {

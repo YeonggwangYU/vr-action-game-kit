@@ -1,29 +1,30 @@
-using System;
 using UnityEngine;
 using UnityEngine.Playables;
-using UnityEngine.Timeline;
 
-public class SetLocationMixerBehaviour : PlayableBehaviour
+namespace _3DGamekitLite.Scripts.Runtime.Game.Timeline.SetLocation
 {
-    public override void ProcessFrame(Playable playable, FrameData info, object playerData)
+    public class SetLocationMixerBehaviour : PlayableBehaviour
     {
-        Transform trackBinding = playerData as Transform;
-
-        if (trackBinding == null)
-            return;
-        
-        int inputCount = playable.GetInputCount ();
-
-        for (int i = 0; i < inputCount; i++)
+        public override void ProcessFrame(Playable playable, FrameData info, object playerData)
         {
-            float inputWeight = playable.GetInputWeight(i);
-            ScriptPlayable<SetLocationBehaviour> inputPlayable = (ScriptPlayable<SetLocationBehaviour>)playable.GetInput(i);
-            SetLocationBehaviour input = inputPlayable.GetBehaviour ();
+            Transform trackBinding = playerData as Transform;
 
-            if (Mathf.Approximately (inputWeight, 1f))
+            if (trackBinding == null)
+                return;
+        
+            int inputCount = playable.GetInputCount ();
+
+            for (int i = 0; i < inputCount; i++)
             {
-                trackBinding.position = input.position;
-                trackBinding.eulerAngles = input.eulerAngles;
+                float inputWeight = playable.GetInputWeight(i);
+                ScriptPlayable<SetLocationBehaviour> inputPlayable = (ScriptPlayable<SetLocationBehaviour>)playable.GetInput(i);
+                SetLocationBehaviour input = inputPlayable.GetBehaviour ();
+
+                if (Mathf.Approximately (inputWeight, 1f))
+                {
+                    trackBinding.position = input.position;
+                    trackBinding.eulerAngles = input.eulerAngles;
+                }
             }
         }
     }

@@ -1,8 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace Gamekit3D.GameCommands
+namespace _3DGamekitLite.Scripts.Runtime.Interactive.Senders
 {
 
     public class SendOnBecameInvisible : SendGameCommand

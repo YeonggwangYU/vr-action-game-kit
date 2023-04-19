@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Assures the particle systems are simulating once.
 /// </summary>
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Effects
 {
     public class SimulateParticleSystem : MonoBehaviour
     {

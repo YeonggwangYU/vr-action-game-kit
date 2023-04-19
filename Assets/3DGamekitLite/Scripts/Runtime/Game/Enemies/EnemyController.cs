@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
+﻿using _3DGamekitLite.Scripts.Runtime.Game.Player;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Gamekit3D
+namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
 {
 //this assure it's runned before any behaviour that may use it, as the animator need to be fecthed
     [DefaultExecutionOrder(-1)]
