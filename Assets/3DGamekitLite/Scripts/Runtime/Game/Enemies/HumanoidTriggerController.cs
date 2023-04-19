@@ -82,12 +82,6 @@ namespace Gamekit3D
         private static readonly int AnimationGotHitHash = Animator.StringToHash("GotHit");
         private static readonly int AnimationDeadHash = Animator.StringToHash("Dead");
 
-
-        /// <Summary>
-        /// 敵が倒れるまでにかかる時間です
-        /// </Summary>
-        private readonly float _timeEnemyDead = 1.3f;
-
         /// <Summary>
         /// 敵の攻撃パターンを設定します
         /// </Summary>
