@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 //NavMeshAgentを使うためにインポートします
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
@@ -56,6 +57,26 @@ namespace Gamekit3D
         /// </Summary>
         [SerializeField] private float knockbackSeconds;
 
+        /// <Summary>
+        /// 敵を倒したときのスローを解除するまでの時間です
+        /// </Summary>
+        [SerializeField] private float delayTime;
+
+        /// <Summary>
+        /// destroy target after beat enemy.
+        /// </Summary>
+        [SerializeField] private GameObject destroyTarget;
+
+        /// <Summary>
+        /// use to move player after beating enemy. 
+        /// </Summary>
+        [SerializeField] private GameObject player;
+
+        /// <Summary>
+        /// player move point after beat enemy. 
+        /// </Summary>
+        [SerializeField] private GameObject clearWarpPoint;
+
         //文字列をハッシュという数字に予め変換しておくことで、処理の度に文字列化を行ないでよいようにして負荷を軽減します
         //また、文字列の打ち間違いをしないようにします
         private static readonly int AnimationGotHitHash = Animator.StringToHash("GotHit");
@@ -66,11 +87,6 @@ namespace Gamekit3D
         /// 敵が倒れるまでにかかる時間です
         /// </Summary>
         private readonly float _timeEnemyDead = 1.3f;
-
-        /// <Summary>
-        /// 敵を倒したときのスローを解除するまでの時間です
-        /// </Summary>
-        private readonly float _delayTime = 2.3f;
 
         /// <Summary>
         /// 敵の攻撃パターンを設定します
@@ -128,7 +144,8 @@ namespace Gamekit3D
                     animator.SetTrigger(AnimationDeadHash);
 
                     //倒れるモーションを待ってから敵を消滅させます
-                    Destroy(gameObject, _timeEnemyDead);
+                    Destroy(destroyTarget, delayTime + 0.1f);
+                    
                 }
 
                 //敵の攻撃が当たったことを示すパラメーターをオンにします
@@ -146,10 +163,15 @@ namespace Gamekit3D
             Time.timeScale = _timeScale;
 
             // 敵が倒れるまで待ちます
-            yield return new WaitForSecondsRealtime(_delayTime);
+            yield return new WaitForSecondsRealtime(delayTime);
 
             //時間の流れを戻します
             Time.timeScale = 1.0f;
+
+            //change position where clear message is displayed.
+            player.transform.position = clearWarpPoint.transform.position;
+            player.transform.rotation = clearWarpPoint.transform.rotation;
+
         }
 
         /// <Summary>
