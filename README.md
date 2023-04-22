@@ -7,6 +7,11 @@ https://docs.google.com/presentation/d/1oNTrDcwSCEkPdT25EP4Mh70X0a1a68cz/edit?us
 
 # License
 
+## Sounds
+
+Otologic
+https://otologic.jp/
+
 ## Fonts
 
 Noto Sans Japanese
