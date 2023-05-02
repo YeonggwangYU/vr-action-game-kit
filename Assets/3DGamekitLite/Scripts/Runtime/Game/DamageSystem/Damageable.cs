@@ -71,17 +71,19 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.DamageSystem
             m_Collider.enabled = enabled;
         }
 
-        public void ApplyDamage(DamageMessage data)
+        public bool ApplyDamage(DamageMessage data)
         {
             if (currentHitPoints <= 0)
             {//ignore damage if already dead. TODO : may have to change that if we want to detect hit on death...
-                return;
+                Debug.Log("Damageable:ApplyDamage:currentHitPoints:false");
+                return false;
             }
 
             if (isInvulnerable)
             {
                 OnHitWhileInvulnerable.Invoke();
-                return;
+                Debug.Log("Damageable:ApplyDamage:isInvulnerable:false");
+                return false;
             }
 
             Vector3 forward = transform.forward;
@@ -92,7 +94,10 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.DamageSystem
             positionToDamager -= transform.up * Vector3.Dot(transform.up, positionToDamager);
 
             if (Vector3.Angle(forward, positionToDamager) > hitAngle * 0.5f)
-                return;
+            {
+                Debug.Log("Damageable:ApplyDamage:hitAngle:false");
+                return false; //TODO: understand what doing.
+            }
 
             isInvulnerable = true;
             currentHitPoints -= data.amount;
@@ -109,6 +114,8 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.DamageSystem
                 var receiver = onDamageMessageReceivers[i] as IMessageReceiver;
                 receiver.OnReceiveMessage(messageType, this, data);
             }
+
+            return true;
         }
 
         void LateUpdate()
