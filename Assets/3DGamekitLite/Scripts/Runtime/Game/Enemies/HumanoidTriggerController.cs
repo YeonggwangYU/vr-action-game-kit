@@ -94,7 +94,6 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
         /// </Summary>
         public float Damage(float inputEnemyHitPoint)
         {
-            
             inputEnemyHitPoint--;
             return inputEnemyHitPoint;
         }
