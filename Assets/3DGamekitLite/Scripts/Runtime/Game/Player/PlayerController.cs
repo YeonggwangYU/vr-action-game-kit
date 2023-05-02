@@ -167,7 +167,7 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Player
 
             m_Damageable.isInvulnerable = true;
 
-            if (transform.root.name == "XR Origin")
+            if (transform.root.TryGetComponent<XROriginController>(out XROriginController _xROriginControllerIdentification))
             {
                 EquipMeleeWeapon(true);
             }
@@ -197,7 +197,7 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Player
 
             UpdateInputBlocking();
 
-            if (transform.root.name == "XR Origin")
+            if (transform.root.TryGetComponent<XROriginController>(out XROriginController _xROriginControllerIdentification))
             {
                 EquipMeleeWeapon(true);
             }
@@ -613,7 +613,7 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Player
             // If there is a checkpoint, move Ellen to it.
             if (m_CurrentCheckpoint != null)
             {
-                if (transform.root.name == "XR Origin")
+                if (transform.root.TryGetComponent<XROriginController>(out XROriginController _xROriginControllerIdentification))
                 {
                     //EllenのボディがアタッチされているXR Origin自体の座標を移動します
                     transform.root.position = m_CurrentCheckpoint.transform.position;
