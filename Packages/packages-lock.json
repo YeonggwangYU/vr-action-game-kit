@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.annulusgames.lucid-random": {
+      "version": "https://github.com/AnnulusGames/LucidRandom.git?path=/Assets/LucidRandom",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "ef54fcebdbd9261a9af2e8651844ee5958c03129"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -90,6 +97,13 @@
       "dependencies": {
         "com.unity.modules.uielements": "1.0.0"
       },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.mathematics": {
+      "version": "1.2.6",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.nuget.newtonsoft-json": {

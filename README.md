@@ -21,3 +21,8 @@ https://otologic.jp/
 
 Noto Sans Japanese
 https://fonts.google.com/noto/specimen/Noto+Sans+JP?subset=japanese&noto.script=Jpan
+
+## Library
+
+LucidRandom
+https://github.com/AnnulusGames/LucidRandom
