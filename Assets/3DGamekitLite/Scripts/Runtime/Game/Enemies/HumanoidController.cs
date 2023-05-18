@@ -1,7 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
-//NavMeshAgentを使うためにインポートします
 using Random = UnityEngine.Random;
+using AnnulusGames.LucidTools.RandomKit;
 
 namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
 {
@@ -78,6 +79,24 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
         private const float MovingWaitSec = 3f;
         private float _movingWaitTimer = 0f;
         private Vector3 _rotateAxis = Vector3.zero;
+        
+        /// <Summary>
+        /// List for randomizing patterns of enemy actions.
+        /// </Summary>
+        private WeightedList<string> actionPatternWeightedList = new WeightedList<string>();
+        private const string MeleeAttackPattern = "Melee Attack";
+        private const string GuardWhileMovingPattern = "Guard while moving";
+        private const string StepAvoidancePattern = "Step avoidance";
+        private const string IdlePattern = "Idle";
+
+        private void Start()
+        {
+            //set attack pattern.
+            actionPatternWeightedList.Add(MeleeAttackPattern, 0.5f);
+            actionPatternWeightedList.Add(GuardWhileMovingPattern, 0.2f);
+            actionPatternWeightedList.Add(StepAvoidancePattern, 0.2f);
+            actionPatternWeightedList.Add(IdlePattern, 0.1f);
+        }
 
         /// <Summary>
         /// 敵が倒れたときにアニメーションから呼び出される処理を定義します
@@ -160,6 +179,8 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
                     else
                     {
                         //ランダムに攻撃パターンを発生させます
+                        
+                        
                         _attackPattern = Random.Range(1, 9);
                         Debug.Log($"attackPattern:{_attackPattern}");
                         switch (_attackPattern)
