@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 using AnnulusGames.LucidTools.RandomKit;
+using UnityEngine.Serialization;
 
 namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
 {
@@ -52,6 +53,17 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
         /// </Summary>
         [SerializeField] private Rigidbody _rigidbody;
 
+        private const string MeleeAttackPattern = "MeleeAttackPattern";
+        private const string GuardWhileMovingPattern = "GuardWhileMovingPattern";
+        private const string StepAvoidancePattern = "StepAvoidancePattern";
+        private const string IdlePattern = "IdlePattern";
+
+        /// <Summary>
+        /// List for randomizing patterns of enemy actions.
+        /// </Summary>近接
+        [SerializeField] private WeightedList<string> meleeActionWeightedList = new WeightedList<string>(MeleeAttackPattern, GuardWhileMovingPattern, StepAvoidancePattern, IdlePattern);
+
+
         //文字列をハッシュという数字に予め変換しておくことで、処理の度に文字列化を行ないでよいようにして負荷を軽減します
         //また、文字列の打ち間違いをしないようにします
         private static readonly int AnimationMovingHash = Animator.StringToHash("Moving");
@@ -74,30 +86,17 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
         private int _attackPattern;
         
         /// <Summary>
+        /// set enemy action pattern
+        /// </Summary>
+        private string _actionPattern;
+        
+        /// <Summary>
         /// 敵の戦闘時の左右移動のための変数です
         /// </Summary>
         private const float MovingWaitSec = 3f;
         private float _movingWaitTimer = 0f;
         private Vector3 _rotateAxis = Vector3.zero;
         
-        /// <Summary>
-        /// List for randomizing patterns of enemy actions.
-        /// </Summary>
-        private WeightedList<string> actionPatternWeightedList = new WeightedList<string>();
-        private const string MeleeAttackPattern = "Melee Attack";
-        private const string GuardWhileMovingPattern = "Guard while moving";
-        private const string StepAvoidancePattern = "Step avoidance";
-        private const string IdlePattern = "Idle";
-
-        private void Start()
-        {
-            //set attack pattern.
-            actionPatternWeightedList.Add(MeleeAttackPattern, 0.5f);
-            actionPatternWeightedList.Add(GuardWhileMovingPattern, 0.2f);
-            actionPatternWeightedList.Add(StepAvoidancePattern, 0.2f);
-            actionPatternWeightedList.Add(IdlePattern, 0.1f);
-        }
-
         /// <Summary>
         /// 敵が倒れたときにアニメーションから呼び出される処理を定義します
         /// </Summary>
@@ -178,9 +177,21 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
                     // 次の行動を決められる状態です
                     else
                     {
+                        // _actionPattern = meleeActionWeightedList.RandomElement();
+                        // Debug.Log($"_actionPattern:{_actionPattern}");
+                        // switch (_actionPattern)
+                        // {
+                        //     case MeleeAttackPattern:
+                        //         break;
+                        //     case GuardWhileMovingPattern:
+                        //         break;
+                        //     case StepAvoidancePattern:
+                        //         break;
+                        //     case IdlePattern:
+                        //         break;
+                        // }
+                        
                         //ランダムに攻撃パターンを発生させます
-                        
-                        
                         _attackPattern = Random.Range(1, 9);
                         Debug.Log($"attackPattern:{_attackPattern}");
                         switch (_attackPattern)
