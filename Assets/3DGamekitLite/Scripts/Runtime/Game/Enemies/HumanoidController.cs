@@ -44,9 +44,29 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
         [SerializeField] public Animator animator;
 
         /// <Summary>
-        /// 左右移動の速さを調整します
+        /// set moving speed.
         /// </Summary>
-        [SerializeField] private int leftRightMoveSpeed;
+        [SerializeField] private int MoveSpeed;
+        
+        /// <Summary>
+        /// set stepping speed.
+        /// </Summary>
+        [SerializeField] private float StepSpeed;
+        
+        /// <Summary>
+        /// set moving time.
+        /// </Summary>
+        [SerializeField] private float MoveTime;
+        
+        /// <Summary>
+        /// set stepping time.
+        /// </Summary>
+        [SerializeField] private float StepTime;
+        
+        /// <Summary>
+        /// set idling time.
+        /// </Summary>
+        [SerializeField] private float IdleTime;
         
         /// <Summary>
         /// 物理演算を行うオブジェクトです
@@ -57,11 +77,38 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
         private const string GuardWhileMovingPattern = "GuardWhileMovingPattern";
         private const string StepAvoidancePattern = "StepAvoidancePattern";
         private const string IdlePattern = "IdlePattern";
+        
+        private const string MoveRightPattern = "MoveRightPattern";
+        private const string MoveBackPattern = "MoveBackPattern";
+        private const string MoveLeftPattern = "MoveLeftPattern";
+        
+        private const string StepRightPattern = "StepRightPattern";
+        private const string StepBackPattern = "StepBackPattern";
+        private const string StepLeftPattern = "StepLeftPattern";
+        
+        private const int AttackFromLeftPattern = 1;
+        private const int AttackFromUpperPattern = 2;
+        private const int AttackFromRightPattern = 3;
 
         /// <Summary>
         /// List for randomizing patterns of enemy actions.
-        /// </Summary>近接
+        /// </Summary>
         [SerializeField] private WeightedList<string> meleeActionWeightedList = new WeightedList<string>(MeleeAttackPattern, GuardWhileMovingPattern, StepAvoidancePattern, IdlePattern);
+
+        /// <Summary>
+        /// List for randomizing patterns of enemy melee attack.
+        /// </Summary>
+        [SerializeField] private WeightedList<int> meleeAttackWeightedList = new WeightedList<int>(AttackFromLeftPattern, AttackFromUpperPattern, AttackFromRightPattern);
+
+        /// <Summary>
+        /// List for randomizing patterns of enemy move.
+        /// </Summary>
+        [SerializeField] private WeightedList<string> moveWeightedList = new WeightedList<string>(MoveRightPattern, MoveBackPattern, MoveLeftPattern);
+
+        /// <Summary>
+        /// List for randomizing patterns of enemy move.
+        /// </Summary>
+        [SerializeField] private WeightedList<string> stepWeightedList = new WeightedList<string>(StepRightPattern, StepBackPattern, StepLeftPattern);
 
 
         //文字列をハッシュという数字に予め変換しておくことで、処理の度に文字列化を行ないでよいようにして負荷を軽減します
@@ -81,21 +128,38 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
         private readonly float _delayTime = 2.3f;
 
         /// <Summary>
-        /// 敵の攻撃パターンを設定します
+        /// set enemy action pattern.
+        /// </Summary>
+        private string _actionPattern;
+        
+        /// <Summary>
+        /// set enemy attack pattern.
         /// </Summary>
         private int _attackPattern;
         
         /// <Summary>
-        /// set enemy action pattern
+        /// set enemy move pattern.
         /// </Summary>
-        private string _actionPattern;
+        private string _movePattern;
+        
+        /// <Summary>
+        /// set enemy step pattern.
+        /// </Summary>
+        private string _stepPattern;
         
         /// <Summary>
         /// 敵の戦闘時の左右移動のための変数です
         /// </Summary>
         private const float MovingWaitSec = 3f;
-        private float _movingWaitTimer = 0f;
+        private float _actionWaitTimer = 0f;
+
+        /// <summary>
+        /// enemy move speed variables
+        /// </summary>
+        private float _actionSpeed = 0f;
         private Vector3 _rotateAxis = Vector3.zero;
+
+        
         
         /// <Summary>
         /// 敵が倒れたときにアニメーションから呼び出される処理を定義します
@@ -108,15 +172,15 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
         /// <Summary>
         /// 左右移動中かを判定します
         /// </Summary>
-        private bool IsLeftRightMoving()
+        private bool InAction()
         {
             // TODO: 以下、Timerを使った仮の判定。本来は移動アニメーションが終了してるかどうかで判定すべき。
-            if (_movingWaitTimer > 0f)
+            if (_actionWaitTimer > 0f)
             {
-                _movingWaitTimer -= Time.deltaTime;
+                _actionWaitTimer -= Time.deltaTime;
             }
 
-            return (_movingWaitTimer > 0f);
+            return (_actionWaitTimer > 0f);
         }
 
         /// <Summary>
@@ -162,13 +226,23 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
                 if (currentClipName == "WalkForward" || currentClipName == "Idle" )
                 {
                     //左右に移動中かを判定します
-                    if (IsLeftRightMoving())
+                    if (InAction())
                     {
-                        // _rotateAxisに応じて移動方向が変わります。
-                        // Vector3.up:プレイヤーからみて右、Vector3.down:プレイヤーからみて左
-                        //参考：https://nekojara.city/unity-circular-motion
-                        transform.RotateAround(_target.position, _rotateAxis,
-                            360 / leftRightMoveSpeed * Time.deltaTime);
+                        switch (_actionPattern)
+                        {
+                            case GuardWhileMovingPattern:
+                            case StepAvoidancePattern:
+                                // _rotateAxisに応じて移動方向が変わります。
+                                // Vector3.up:プレイヤーからみて右、Vector3.down:プレイヤーからみて左
+                                //参考：https://nekojara.city/unity-circular-motion
+                                transform.RotateAround(_target.position, _rotateAxis,
+                                    360 / _actionSpeed * Time.deltaTime);
+                                break;
+                            case IdlePattern:
+                                //do nothing
+                                break;
+                        }
+
                     }
                     else if(1 <= battleRandomValue && battleRandomValue <= 3)
                     {
@@ -177,54 +251,65 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Enemies
                     // 次の行動を決められる状態です
                     else
                     {
-                        // _actionPattern = meleeActionWeightedList.RandomElement();
-                        // Debug.Log($"_actionPattern:{_actionPattern}");
-                        // switch (_actionPattern)
-                        // {
-                        //     case MeleeAttackPattern:
-                        //         break;
-                        //     case GuardWhileMovingPattern:
-                        //         break;
-                        //     case StepAvoidancePattern:
-                        //         break;
-                        //     case IdlePattern:
-                        //         break;
-                        // }
-                        
-                        //ランダムに攻撃パターンを発生させます
-                        _attackPattern = Random.Range(1, 9);
-                        Debug.Log($"attackPattern:{_attackPattern}");
-                        switch (_attackPattern)
+                        _actionPattern = meleeActionWeightedList.RandomElement();
+                        Debug.Log($"_actionPattern:{_actionPattern}");
+                        switch (_actionPattern)
                         {
-                            case 1:
-                            case 2:
-                            case 3:
-                            //to increase attack frequency, add number.
-                            case 6:
-                            case 7:
-                            case 8:
-                                //set number equal to attackPattern.
-                                if (_attackPattern > 5)
-                                {
-                                    _attackPattern =- 5;
-                                }
-                                //ランダムに攻撃を行います
+                            case MeleeAttackPattern:
+                                //set random melee attack pattern.
+                                _attackPattern =  meleeAttackWeightedList.RandomElement();
+                                Debug.Log($"_attackPattern:{_attackPattern}");
                                 animator.SetInteger(AnimationBattleRandomHash, _attackPattern);
                                 break;
-                            // 以下に加えて、AnimatorウィンドウのStateMachineBehaviourにおいても、Idle1のアニメーションになった際に攻撃パターンをリセットしています
-                            case 4:
-                                // 攻撃パターンをリセット
+                            
+                            case GuardWhileMovingPattern:
+                                //reset melee attack pattern.
                                 animator.SetInteger(AnimationBattleRandomHash, 0);
-                                //プレイヤーからみて右に動きます
-                                _rotateAxis = Vector3.up;
-                                _movingWaitTimer = MovingWaitSec;
+                                _actionSpeed = MoveSpeed;
+                                _actionWaitTimer = MoveTime;
+                                
+                                _movePattern = moveWeightedList.RandomElement();
+                                Debug.Log($"_movePattern:{_movePattern}");
+                                switch (_movePattern)
+                                {
+                                    case MoveRightPattern:
+                                        _rotateAxis = Vector3.up;
+                                        break;
+                                    case MoveLeftPattern:
+                                        _rotateAxis = Vector3.down;
+                                        break;
+                                    case MoveBackPattern:
+                                        //I haven't implemented yet, so do nothing.
+                                        break;
+                                }
                                 break;
-                            case 5:
-                                // 攻撃パターンをリセット
+                            
+                            case StepAvoidancePattern:
                                 animator.SetInteger(AnimationBattleRandomHash, 0);
-                                //プレイヤーからみて左に動きます
-                                _rotateAxis = Vector3.down;
-                                _movingWaitTimer = MovingWaitSec;
+                                _actionSpeed = StepSpeed;
+                                _actionWaitTimer = StepTime;
+                                
+                                _stepPattern = stepWeightedList.RandomElement();
+                                Debug.Log($"_stepPattern:{_stepPattern}");
+                                switch (_stepPattern)
+                                {
+                                    case StepRightPattern:
+                                        _rotateAxis = Vector3.up;
+                                        break;
+                                    case StepLeftPattern:
+                                        _rotateAxis = Vector3.down;
+                                        break;
+                                    case StepBackPattern:
+                                        //I haven't implemented yet, so do nothing.
+                                        break;
+                                }
+                                break;
+                            
+                            case IdlePattern:
+                                //reset melee attack pattern.
+                                animator.SetInteger(AnimationBattleRandomHash, 0);
+                                _actionSpeed = 0; 
+                                _actionWaitTimer = IdleTime;
                                 break;
                         }
                     }
