@@ -1,4 +1,4 @@
-# vr-action-game-kit
+# VR Action Game Kit
 
 This is the repository of the "VR Action Game Kit", which can be used for developing VR action games in Unity
 
