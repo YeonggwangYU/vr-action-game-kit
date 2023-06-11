@@ -57,7 +57,12 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Weapon
         [SerializeField] private float attackEnableSpeed;
 
         /// <Summary>
-        /// speed that enable weapon attack.
+        /// acceleration that enable weapon attack.
+        /// </Summary>
+        [SerializeField] private float attackEnableAcceleration;
+
+        /// <Summary>
+        /// time to disable Trail Renderer.
         /// </Summary>
         [SerializeField] private float disableTrailRendererTime;
 
@@ -69,6 +74,16 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Weapon
         /// </Summary>
         private Vector3 _prevPosition;
 
+        /// <Summary>
+        /// velocity before 1 frame.
+        /// </Summary>
+        private Vector3 _prevVelocity;
+
+        /// <Summary>
+        /// Used to determine if acceleration exceeds a threshold over multiple frames
+        /// </Summary>
+        private int _frameCounter;
+        [SerializeField] private int frameThreshold;
         
         /// <Summary>
         /// check attack is enable.
@@ -159,6 +174,19 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Weapon
             trailRenderer.enabled = false;
         }
 
+        /// <Summary>
+        /// Checks if acceleration thresholds are exceeded over multiple frames.
+        /// </Summary>
+        private bool CheckAccelerationThresholds()
+        {
+            if (_frameCounter >= 0)
+            {
+                _frameCounter++;
+            }
+
+            return (_frameCounter > frameThreshold);
+        }
+        
         /// <Summary>
         /// 左手のXR Ray Interactorから呼び出され、武器を持ったのが左手であると設定します
         /// </Summary>
@@ -307,7 +335,7 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Weapon
                 return;
             }
             
-            // do nothing whilde deltaTime is 0.
+            // do nothing while deltaTime is 0.
             if (Mathf.Approximately(Time.deltaTime, 0))
             {
                 return;
@@ -316,19 +344,32 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Weapon
             // get current position.
             Vector3 position = transform.position;
 
-            // calcurate current speed.
+            // calculate current speed.
             Vector3 velocity = (position - _prevPosition) / Time.deltaTime;
+            
+            // calculate acceleration.
+            Vector3 acceleration = velocity - _prevVelocity;
 
             if (velocity.magnitude > attackEnableSpeed)
             {
-                if (!isAttackEnable)
+                Debug.Log($"PlayerWeaponController:Update():velocity.magnitude {velocity.magnitude}");
+                Debug.Log($"PlayerWeaponController:Update():acceleration.magnitude {acceleration.magnitude}");
+                if (acceleration.magnitude > attackEnableAcceleration)
                 {
-                    if (isAttackDisabledByEnemyGuard)
+                    Debug.Log($"PlayerWeaponController:Update():_frameCounter {_frameCounter}");
+                    if (CheckAccelerationThresholds())
                     {
-                        return;
+                        if (!isAttackEnable)
+                        {
+                            if (isAttackDisabledByEnemyGuard)
+                            {
+                                return;
+                            }
+                            EnableAttack();
+                        }
+
+                        _frameCounter = 0;
                     }
-                    
-                    EnableAttack();
                 }
             }
             else if((velocity.magnitude <= attackEnableSpeed))
@@ -341,6 +382,7 @@ namespace _3DGamekitLite.Scripts.Runtime.Game.Weapon
             
             // update previous frame position.
             _prevPosition = position;
+            _prevVelocity = velocity;
         }
     }
 }
