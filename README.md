@@ -15,6 +15,11 @@ A demo version of the sample game will be available on Steam.
 See below(Japanese)
 https://github.com/mathken029/vr-action-game-kit/wiki/%E4%BD%BF%E3%81%84%E6%96%B9
 
+## Environment
+
+・Unity 2022 LTS
+・Meta Quest 2
+
 # License
 
 ## Sound
