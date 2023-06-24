@@ -10,10 +10,10 @@ A demo version of the sample game will be available on Steam.
 
 # How to use
 
-以下を参照してください。
+本キットの使い方については以下を参照してください。
 
-See below(Japanese)
-https://github.com/mathken029/vr-action-game-kit/wiki/%E4%BD%BF%E3%81%84%E6%96%B9
+See below for instructions on how to use this kit.(Japanese)
+https://vrgamemedia.com/2023/06/24/%e7%84%a1%e6%96%99vr%e3%82%b2%e3%83%bc%e3%83%a0%e9%96%8b%e7%99%ba%e3%82%ad%e3%83%83%e3%83%88%e3%80%8evr-action-game-kit%e3%80%8f%e3%81%ae%e3%82%bb%e3%83%83%e3%83%88%e3%82%a2%e3%83%83%e3%83%97%e6%96%b9/
 
 ## Environment
 
