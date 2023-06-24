@@ -1,28 +1,33 @@
 # VR Action Game Kit
 
-This is the repository of the "VR Action Game Kit", which can be used for developing VR action games in Unity
+Unity での VR アクションゲームの開発に利用可能な「VR Action Game Kit」のリポジトリです。
 
-A brief combat demo at this time is available for download below.
+サンプルゲームの体験版をSteamで公開予定です。
 
-Unity での VR アクションゲームの開発に利用可能な「VR Action Game Kit」のリポジトリです
+This is the repository of the "VR Action Game Kit", which can be used for developing VR action games in Unity.
 
-現時点での簡単な戦闘のデモを以下からダウンロード可能です。
+A demo version of the sample game will be available on Steam.
 
-https://mathken029.itch.io/vr-action-game-kit
+# How to use
+
+以下を参照してください。
+
+See below(Japanese)
+https://github.com/mathken029/vr-action-game-kit/wiki/%E4%BD%BF%E3%81%84%E6%96%B9
 
 # License
 
-## Sounds
+## Sound
 
-Otologic
+Otologic:
 https://otologic.jp/
 
-## Fonts
+## Font
 
-Noto Sans Japanese
+Noto Sans Japanese:
 https://fonts.google.com/noto/specimen/Noto+Sans+JP?subset=japanese&noto.script=Jpan
 
 ## Library
 
-LucidRandom
+LucidRandom:
 https://github.com/AnnulusGames/LucidRandom
