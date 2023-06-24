@@ -17,7 +17,8 @@ https://github.com/mathken029/vr-action-game-kit/wiki/%E4%BD%BF%E3%81%84%E6%96%B
 
 ## Environment
 
-・Unity 2022 LTS
+・Unity 2022 LTS以上
+・JetBrains Rider 2022.3.2以上
 ・Meta Quest 2
 
 # License
