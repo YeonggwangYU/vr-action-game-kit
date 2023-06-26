@@ -2,7 +2,7 @@
 
 Unity での VR アクションゲームの開発に利用可能な「VR Action Game Kit」のリポジトリです。
 
-サンプルゲームの体験版をSteamで公開予定です。
+サンプルゲームの体験版を Steam で公開予定です。
 
 This is the repository of the "VR Action Game Kit", which can be used for developing VR action games in Unity.
 
@@ -14,13 +14,12 @@ A demo version of the sample game will be available on Steam.
 
 See below for instructions on how to use this kit.(Japanese)
 
-
-https://vrgamemedia.com/2023/06/24/vr-action-game-kit-setup/
+https://vrgamemedia.com/vr-action-game-kit-setup/
 
 ## Environment
 
-・Unity 2022 LTS以上
-・JetBrains Rider 2022.3.2以上
+・Unity 2022 LTS 以上
+・JetBrains Rider 2022.3.2 以上
 ・Meta Quest 2
 
 # License
