@@ -14,15 +14,16 @@ A demo version of the sample game will be available on Steam.
 
 See below for instructions on how to use this kit.(Japanese)
 
-https://vrgamemedia.com/vr-action-game-kit-setup/
+https://vrgamemedia.com/2023/06/27/vr-action-game-kit-setup/
 
 ## Environment
 
 ・Unity 2022 LTS 以上
-・JetBrains Rider 2022.3.2 以上
 ・Meta Quest 2
 
 # License
+
+[MIT License](LICENSE)
 
 ## Sound
 
