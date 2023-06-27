@@ -19,6 +19,7 @@ https://vrgamemedia.com/2023/06/27/vr-action-game-kit-setup/
 ## Environment
 
 ・Unity 2022 LTS 以上
+
 ・Meta Quest 2
 
 # License
